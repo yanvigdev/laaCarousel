@@ -1,0 +1,43 @@
+.carouselcontainer{
+    position: relative;
+    overflow: hidden;
+}
+
+
+.loaderCarousel{
+    background: url(../images/loaderCarousel.gif) #ffffff no-repeat center center;
+}
+.carousel{
+    position: absolute;
+    z-index: 1;
+}
+.loaderCarousel .carousel{
+    display: none;
+}
+
+.carouselcontainer .flechesCarousel{
+    position: absolute;
+    top:50%;
+    width: 15px;
+    height: 20px;
+    background-image: url(../images/flecheCarousel.png);
+    background-repeat: no-repeat;
+    z-index: 2;
+    cursor: pointer;
+}
+.carouselcontainer .flecheDroite{
+    right:3%;
+    background-position: top right;
+}
+.carouselcontainer .flecheGauche{
+    left:3%;
+    background-position: top left;
+}
+.carouselcontainer .flecheDroite:hover{
+
+    background-position: bottom right;
+}
+.carouselcontainer .flecheGauche:hover{
+
+    background-position: bottom left;
+}

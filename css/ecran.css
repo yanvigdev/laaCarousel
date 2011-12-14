@@ -1,0 +1,14 @@
+html, body{
+    height: 100%;
+}
+body{
+    background-color: black;
+    color: white;
+}
+.wrapper{
+    width: 980px;
+    margin: 0 auto;
+}
+#diaporama, #diaporama2{
+	
+}
