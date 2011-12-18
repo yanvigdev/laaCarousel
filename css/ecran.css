@@ -9,6 +9,6 @@ body{
     width: 980px;
     margin: 0 auto;
 }
-#diaporama, #diaporama2{
-	
+#diaporama2, #diaporama3,#diaporama5, #diaporama6{
+float: left
 }

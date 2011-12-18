@@ -16,35 +16,82 @@
     </head>
     <body>
         <div class="wrapper">
-            <div id='container'>
-                <?php
-                    $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
-                    $hauteur = 300;
-                    $largeur = 980;
-                    ?>
-                <div id='diaporama' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
 
-                    <?php for ($index = 1; $index < 10; $index++)
-                        { ?>
-                        <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>/Demo Plugin jQuery laaCarousel <?php echo $type[$index]; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
-                    <?php } ?>
-                </div>
-                <div id='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
-                    <?php for ($index = 10; $index > 1; $index--)
-                        { ?>
-                        <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>/Demo Plugin jQuery laaCarousel <?php echo $type[$index]; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
-                    <?php } ?>
+            <?php
+            $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
+            $hauteur = 300;
+            $largeur = 980;
+            ?>
+            <div id='diaporama1' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
 
-                </div>
+                <?php for ($index = 1; $index < 10; $index++)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
 
-            </div>
-        </div>
+
+            </div><!--Fin diaporama1 -->
+            <?php
+            $hauteur = 250;
+            $largeur = 490;
+            ?>
+            <div id='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
+                <?php for ($index = 10; $index > 1; $index--)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
+
+            </div><!--Fin diaporama2 -->
+            <div id='diaporama3' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
+                <?php for ($index = 10; $index > 1; $index--)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[0]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
+
+            </div><!--Fin diaporama3 -->
+            <?php
+            $hauteur = 300;
+            $largeur = 980;
+            ?>
+            <div id='diaporama4' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
+
+                <?php for ($index = 1; $index < 10; $index++)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
+
+
+            </div><!--Fin diaporama4 -->
+            <?php
+            $hauteur = 250;
+            $largeur = 490;
+            ?>
+            <div id='diaporama5' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
+                <?php for ($index = 10; $index > 1; $index--)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
+
+            </div><!--Fin diaporama5 -->
+            <div id='diaporama6' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
+                <?php for ($index = 10; $index > 1; $index--)
+                    { ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[0]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                <?php } ?>
+
+            </div><!--Fin diaporama6 -->
+        </div><!--Fin wrapper -->
 
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('#diaporama').laaCarousel({mode:'slide',btn : true});
-                $('#diaporama2').laaCarousel({btn : true,delay:3000});
+                $('#diaporama1').laaCarousel({mode:'slide'});
+                $('#diaporama2').laaCarousel({delay:4000});
+                $('#diaporama3').laaCarousel({legend : "alt"});
+                $('#diaporama4').laaCarousel({fleche : true});
+                $('#diaporama5').laaCarousel({selecteur:true});
+                $('#diaporama6').laaCarousel({preload:false});
+
             });
         </script>
     </body>

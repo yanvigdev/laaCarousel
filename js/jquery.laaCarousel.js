@@ -2,7 +2,7 @@
  * jQuery lightweight plugin laaCarousel
  * Original author: Yann Vignolet
  * Comments: Yann Vignolet
- * Version : 1.1
+ * Version : 1.2
  *
  * Ce plugin affiche en diaporama les images avec des effets de transition.
  */
@@ -15,22 +15,33 @@
 
 
     /**
-    * defaults sont les reglage qui l'utilisateur peut faire varier
-    * settings sont les variables attaché à chaque carousel
+    * defaults sont les reglages que l'utilisateur peut faire varier
+    * settings sont les variables attachées à chaque carousel
+    * @delay: délai en milliseconde (par defaut 3000)
+    * @mode : mode de transition (par defaut fade)
+    * @fleche : afficher des flêches pour passé à l'image suivante ou precedente (par defaut false)
+    * @selecteur : afficher une serie de bouton pour passé d'une image à l'autre (par defaut false)
+    * @preload : gestion du prechargement des images (par defaut true)
+    * @legend : affichage ou non d'une legende sur chaque image (par defaut null)
     */
     var pluginName = 'laaCarousel',
     defaults = {
         delay: "3000",
         mode : "fade",
-        btn : false,
-        preload : false
+        fleche : false,
+        selecteur : false,
+        preload : true,
+        legend : null
     },
     settings = {
         nbElement : null,
         elementCourant : 0,
         elementPrecedent : null,
         largeur : null,
-        click : false
+        click : false,
+        survole : false,
+        slideTimer : null
+
     };
 
     // The actual plugin constructor
@@ -48,7 +59,7 @@
     }
 
     Plugin.prototype.init = function () {
-        var count = 0;
+
         var self = this;
         $(this.element).addClass('carouselcontainer loaderCarousel');
         $(this.element).children("img").addClass('carousel');
@@ -64,58 +75,18 @@
             $(this).attr('data', index);
         });
 
-        precharger_image(this);
+        if(this.options.preload){
+            precharger_image(this);
+        }
+        else{
+            setCarousel(self);
+        }
 
         $(this.element).bind('complete',function(){
 
-            $(self.element).removeClass("loaderCarousel");
 
 
-            if(self.options.nbElement>1){
-
-
-
-
-                //Activation des Boutons
-                if(self.options.btn){
-                    $(self.element).append("<div class='flecheGauche flechesCarousel'></div><div class='flecheDroite flechesCarousel'></div>");
-                    $(self.element).find('.flecheGauche').live('click', function(event) {
-                        event.stopPropagation();
-
-                        $(self.element).children('img').stop(true,true);
-
-                        self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
-                        self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
-
-
-
-                        self.options.click=true;
-                        startCarousel(self);
-
-
-                    });
-                    $(self.element).find('.flecheDroite').live('click', function(event) {
-                        event.stopPropagation();
-
-                        $(self.element).children('img').stop(true,true);
-
-                        self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
-
-
-                        self.options.elementCourant =((self.options.elementPrecedent+1)>=(self.options.nbElement))?0:(self.options.elementPrecedent+1);
-
-
-
-                        self.options.click=true;
-                        startCarousel(self);
-                    });
-                }
-
-
-                startCarousel(self);
-
-
-            }
+            setCarousel(self);
 
         });
 
@@ -125,8 +96,97 @@
 
 
     };
-    function startCarousel(self){
+    function setCarousel(self){
+        $(self.element).removeClass("loaderCarousel");
 
+
+        if(self.options.nbElement>1){
+
+
+
+
+            //Activation des fleches
+            if(self.options.fleche){
+                $(self.element).append("<div class='flecheGauche flechesCarousel'></div><div class='flecheDroite flechesCarousel'></div>");
+
+                $(self.element).find('.flecheGauche').live('click', function(event) {
+                    event.stopPropagation();
+
+                    $(self.element).children('.carousel').stop(true,true);
+                    //$(self.element).children('.slideCarousel').stop(true,true);
+
+                    self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+                    self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
+
+
+                    self.options.slideTimer =clearTimeout(self.options.slideTimer);
+                    self.options.click=true;
+                    startCarousel(self);
+
+
+                });
+                $(self.element).find('.flecheDroite').live('click', function(event) {
+                    event.stopPropagation();
+
+
+                    $(self.element).children('.carousel').stop(true,true);
+                    //$(self.element).children('.slideCarousel').stop(true,true);
+
+                    self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+
+
+                    self.options.elementCourant =((self.options.elementPrecedent+1)>=(self.options.nbElement))?0:(self.options.elementPrecedent+1);
+
+
+                    self.options.slideTimer =clearTimeout(self.options.slideTimer);
+                    self.options.click=true;
+                    startCarousel(self);
+                });
+
+            }
+            //Activation du selecteur
+            if(self.options.selecteur){
+                $(self.element).append("<div class='selecteurCarousel'></div>");
+                for (var i = 0; i < self.options.nbElement; i++) {
+                    $(self.element).find(".selecteurCarousel").append("<span data='"+i+"'>&bull;</span>");
+                }
+                $(self.element).find(".selecteurCarousel").find("span:first").addClass('select');
+                $(self.element).find(".selecteurCarousel").find("span").live('click', function(event) {
+                    event.stopPropagation();
+
+
+                    $(self.element).children('.carousel').stop(true,true);
+
+
+                    self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+
+
+                    self.options.elementCourant =Number($(this).attr('data'));
+
+                    self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
+
+
+
+                    self.options.click=true;
+                    startCarousel(self);
+
+
+
+                });
+            }
+            if(self.options.legend!==null){
+                $(self.element).append("<div class='legendCarousel'><p></p></div>");
+
+            }
+
+            startCarousel(self);
+
+
+        }
+    }
+    function startCarousel(self){
+        update(self);
         switch (self.options.mode) {
             case 'fade':
                 if(!self.options.click){
@@ -137,16 +197,20 @@
                 break;
             case 'slide':
                 if(!self.options.click){
-
+                    $(self.element).prepend("<div class='slideCarousel'></div>");
+                    $(self.element).children(".slideCarousel").css({
+                        "width": (self.options.largeur*self.options.nbElement)+"px"
+                    });
+                    $(self.element).children(".slideCarousel").append($(self.element).find(".carousel"));
                     $(self.element).find(".carousel").each(function(index){
                         $(this).css({
-                            'left':index*self.options.largeur
+                            'float':"left",
+                            'position':"relative"
                         });
 
-                    })
-                    $(self.element).find(".carousel:first").css({
-                        'left': 0
-                    }).addClass('active');
+                    });
+                    $(self.element).find(".carousel:first").addClass('active');
+
 
 
                 }
@@ -167,32 +231,43 @@
             $(this).addClass('active');
             self.options.click =false;
             $(this).siblings(".carousel").removeClass('active').filter(":visible").fadeOut('slow');
-
+            update(self);
             fade(self);
         });
 
     }
     function slide(self) {
+        self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
+
         if(!self.options.click){
 
             self.options.elementPrecedent = self.options.elementCourant;
             self.options.elementCourant=suivant(self.options);
+
         }
-        var deplacement = (self.options.elementCourant>0)?'-='+self.options.largeur+'px': '+='+(self.options.nbElement-1)*self.options.largeur+'px';
-        var count = 0;
 
 
-        $(self.element).children(".carousel").delay((self.options.click)?10:self.options.delay).animate({
-            'left': deplacement
+
+
+
+        $(self.element).children(".slideCarousel").stop().animate({
+            'left': '-'+(self.options.largeur* self.options.elementCourant)+'px'
         }, 'slow' , function() {
-            count++;
-            if(count===self.options.nbElement){
-                $(self.element).children(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
-                self.options.click =false;
+            update(self);
+            $(self.element).children(".slideCarousel").find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
+            self.options.click =false;
 
-                slide(self);
-            }
-        })
+
+
+        });
+
+
+        self.options.slideTimer= setTimeout( function() {
+            slide(self);
+        },self.options.delay);
+
+
 
     }
 
@@ -205,9 +280,34 @@
 
         return num;
     }
+    function update(self){
+        if(self.options.selecteur){
+            $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
+        }
+        if(self.options.fleche){
+            if(self.options.elementCourant===0){
+                $(self.element).find(".flecheGauche").fadeOut('fast');
+            }else{
+                $(self.element).find(".flecheGauche").fadeIn('fast');
+            }
+            if(self.options.elementCourant===(self.options.nbElement-1)){
+                $(self.element).find(".flecheDroite").fadeOut('fast');
+            }else{
+                $(self.element).find(".flecheDroite").fadeIn('fast');
+            }
+        }
+        if(self.options.legend!==null){
+
+            var legende = $(self.element).find(".carousel").eq(self.options.elementCourant).attr(self.options.legend);
+
+            $(self.element).find(".legendCarousel>p").html(legende);
+        }
+    }
 
     function precharger_image(self)
     {
+
+
 
 
         var _done=function() {
@@ -218,7 +318,7 @@
         $(self.element).find(".carousel").each(function() {
             var _img = this,
             _checki=function(e) {
-                if((_img.complete) || (_img.readyState=='complete'&&e.type=='readystatechange') )
+                if((_img.complete) || (_img.readyState==='complete'&&e.type==='readystatechange') )
                 {
                     if( ++i===$(self.element).find(".carousel").length ) _done();
                 }
@@ -235,6 +335,7 @@
                 type:'readystatechange'
             }); // bind to 'load' event...
         });
+
 
 
 

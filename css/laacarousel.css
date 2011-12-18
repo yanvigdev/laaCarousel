@@ -14,7 +14,48 @@
 .loaderCarousel .carousel{
     display: none;
 }
+.slideCarousel{
+    position: absolute;
+    height: 100%;
+}
+.selecteurCarousel, .legendCarousel{
+    position: absolute;
+    width: 100%;
+    background: url(../images/bkgCarousel.png);
+    text-align: center;
+    z-index: 2;
+    height: 32px;
+    font-family: sans-serif;
+}
+.legendCarousel{
+    top: 0;
+    color: white;
+    font-size: 1.1em;
+    line-height: 32px;
+}
+.selecteurCarousel{
 
+    bottom: 0;
+}
+.selecteurCarousel span{
+    color: white;
+    font-size: 2em;
+    margin: 0 5px;
+    cursor: pointer;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+.selecteurCarousel span:hover,.selecteurCarousel span.select{
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: alpha(opacity=100);
+    -moz-opacity:1;
+    -khtml-opacity: 1;
+    opacity: 1;
+    cursor: pointer;
+}
 .carouselcontainer .flechesCarousel{
     position: absolute;
     top:50%;
