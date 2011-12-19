@@ -2,7 +2,7 @@
  * jQuery lightweight plugin laaCarousel
  * Original author: Yann Vignolet
  * Comments: Yann Vignolet
- * Version : 1.2
+ * Version : 1.3
  *
  * Ce plugin affiche en diaporama les images avec des effets de transition.
  */
@@ -22,7 +22,8 @@
     * @fleche : afficher des flêches pour passé à l'image suivante ou precedente (par defaut false)
     * @selecteur : afficher une serie de bouton pour passé d'une image à l'autre (par defaut false)
     * @preload : gestion du prechargement des images (par defaut true)
-    * @legend : affichage ou non d'une legende sur chaque image (par defaut null)
+    * @legende : affichage ou non d'une legende sur chaque image (par defaut null)
+    * @vignette : ajout une serie de vignette pour passer d'une image à l'autre (par defaut false)
     */
     var pluginName = 'laaCarousel',
     defaults = {
@@ -31,7 +32,10 @@
         fleche : false,
         selecteur : false,
         preload : true,
-        legend : null
+        legende : null,
+        vignette : false,
+        vignetteHauteur : 50,
+        vignetteLargeur : 50
     },
     settings = {
         nbElement : null,
@@ -143,7 +147,7 @@
                     startCarousel(self);
                 });
 
-            }
+            }//fin if fleche
             //Activation du selecteur
             if(self.options.selecteur){
                 $(self.element).append("<div class='selecteurCarousel'></div>");
@@ -174,11 +178,79 @@
 
 
                 });
-            }
-            if(self.options.legend!==null){
+            }//fin if selecteur
+            if(self.options.legende!==null){
                 $(self.element).append("<div class='legendCarousel'><p></p></div>");
 
-            }
+            }//fin if legend
+
+            if(self.options.vignette){
+                var vignetteRatio = self.options.vignetteHauteur / self.options.vignetteLargeur;
+                $(self.element).append("<div class='vignetteCarousel'></div>");
+
+
+
+
+                $(self.element).find(".carousel").each(function(index){
+                    var carouselRatio =  $(this).height() / $(this).width(), hauteur,largeur,style;
+                    if (vignetteRatio > carouselRatio)
+                    {
+                        hauteur=self.options.vignetteHauteur;
+                        largeur=self.options.vignetteHauteur / carouselRatio;
+                        style="margin-left:"+(  (self.options.vignetteLargeur - self.options.vignetteHauteur / carouselRatio) / 2)+"px";
+
+                    }
+                    else {
+                        largeur=self.options.vignetteLargeur;
+                        hauteur=self.options.vignetteLargeur * carouselRatio;
+                        style="margin-top:"+( (self.options.vignetteHauteur - self.options.vignetteLargeur * carouselRatio) / 2)+"px";
+
+                    }
+                    var thumbImage="<div><img src='"+$(this).attr('src')+"' height='"+hauteur+"' width='"+largeur+"' alt='"+"' data='"+index+"' style='"+style+"'/></div>";
+                    $(self.element).find(".vignetteCarousel").append(thumbImage);
+
+                });
+
+                var containerHauteur= $(self.element).find(".vignetteCarousel").children("div:first").outerHeight(true);
+                var containerLargeur=$(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true);
+
+                containerLargeur=(parseInt(self.options.largeur/containerLargeur,10)>self.options.nbElement)?containerLargeur*self.options.nbElement:parseInt(self.options.largeur/containerLargeur,10)*containerLargeur;
+                containerHauteur=Math.ceil(self.options.nbElement/(containerLargeur/$(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true)))*containerHauteur;
+
+                var centrage = (self.options.largeur-containerLargeur)/2;
+                $(self.element).css({
+                    'height':'+='+containerHauteur+'px'
+                    });
+                $(self.element).find('.vignetteCarousel').css({
+                    'width':containerLargeur+'px',
+                    'height':containerHauteur+'px',
+                    'margin-left':centrage+'px'
+                    });
+                $(self.element).find(".vignetteCarousel").find("div:first").addClass('select');
+                $(self.element).find(".vignetteCarousel").find("img").live('click', function(event) {
+                    event.stopPropagation();
+
+
+                    $(self.element).children('.carousel').stop(true,true);
+
+
+                    self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+
+
+                    self.options.elementCourant =Number($(this).attr('data'));
+
+                    self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
+
+
+
+                    self.options.click=true;
+                    startCarousel(self);
+
+
+
+                });
+            }//fin if vignette
 
             startCarousel(self);
 
@@ -284,6 +356,10 @@
         if(self.options.selecteur){
             $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
         }
+        if(self.options.vignette){
+            $(self.element).children(".vignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
+
+        }
         if(self.options.fleche){
             if(self.options.elementCourant===0){
                 $(self.element).find(".flecheGauche").fadeOut('fast');
@@ -296,9 +372,9 @@
                 $(self.element).find(".flecheDroite").fadeIn('fast');
             }
         }
-        if(self.options.legend!==null){
+        if(self.options.legende!==null){
 
-            var legende = $(self.element).find(".carousel").eq(self.options.elementCourant).attr(self.options.legend);
+            var legende = $(self.element).find(".carousel").eq(self.options.elementCourant).attr(self.options.legende);
 
             $(self.element).find(".legendCarousel>p").html(legende);
         }

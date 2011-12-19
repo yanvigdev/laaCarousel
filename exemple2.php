@@ -88,7 +88,7 @@
                 $('#diaporama1').laaCarousel({mode:'slide'});
                 $('#diaporama2').laaCarousel({delay:4000});
                 $('#diaporama3').laaCarousel({legend : "alt"});
-                $('#diaporama4').laaCarousel({fleche : true});
+                $('#diaporama4').laaCarousel({fleche : true,vignette:true});
                 $('#diaporama5').laaCarousel({selecteur:true});
                 $('#diaporama6').laaCarousel({preload:false});
 
