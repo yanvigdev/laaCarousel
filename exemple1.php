@@ -20,9 +20,9 @@
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
             $hauteur = 600;
-            $largeur = 490;
+            $largeur = 980;
             ?>
-            <?php for ($i = 1; $i < 3; $i++)
+            <?php for ($i = 1; $i < 2; $i++)
                 { ?>
                 <div class='diaporama' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
 
@@ -47,7 +47,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',legende:'alt',vignette:true});
+                $('.diaporama').laaCarousel({mode:'slide',legende:'alt',vignette:true,vignetteHauteur : 70,vignetteLargeur : 100});
 
 
             });

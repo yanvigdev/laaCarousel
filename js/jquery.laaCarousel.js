@@ -185,7 +185,7 @@
             }//fin if legend
 
             if(self.options.vignette){
-                var vignetteRatio = self.options.vignetteHauteur / self.options.vignetteLargeur;
+                var vignetteRatio = self.options.vignetteHauteur / self.options.vignetteHauteur;
                 $(self.element).append("<div class='vignetteCarousel'></div>");
 
 
@@ -210,9 +210,12 @@
                     $(self.element).find(".vignetteCarousel").append(thumbImage);
 
                 });
-
+                $(self.element).find(".vignetteCarousel").find("div").css({
+                    'height':self.options.vignetteHauteur+'px',
+                    'width':self.options.vignetteLargeur+'px'
+                    });
                 var containerHauteur= $(self.element).find(".vignetteCarousel").children("div:first").outerHeight(true);
-                var containerLargeur=$(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true);
+                var containerLargeur= $(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true);
 
                 containerLargeur=(parseInt(self.options.largeur/containerLargeur,10)>self.options.nbElement)?containerLargeur*self.options.nbElement:parseInt(self.options.largeur/containerLargeur,10)*containerLargeur;
                 containerHauteur=Math.ceil(self.options.nbElement/(containerLargeur/$(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true)))*containerHauteur;
