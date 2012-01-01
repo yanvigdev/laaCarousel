@@ -26,15 +26,32 @@
                 { ?>
                 <div class='diaporama' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
 
-                    <?php for ($index = 1; $index < 9; $index++)
+                    <?php for ($index = 1; $index < 5; $index++)
                         {
                         $letype=rand(1, 10)
                         ?>
-                        <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                        <img src='images/<?php echo $index; ?>.jpeg' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                     <?php }; ?>
 
                 </div>
             <?php }; ?>
+
+
+
+                 <?php for ($i = 1; $i < 2; $i++)
+                { ?>
+                <div class='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
+
+                    <?php for ($index = 5; $index < 9; $index++)
+                        {
+                        $letype=rand(1, 10)
+                        ?>
+                        <img src='images/<?php echo $index; ?>.jpeg' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <?php }; ?>
+
+                </div>
+            <?php }; ?>
+
 
 
         </div>
@@ -42,7 +59,8 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'vague',fleche:true});
+                $('.diaporama').laaCarousel({mode:'vague',selecteur:true});
+                $('.diaporama2').laaCarousel({mode:'smooth',vignette:true});
 
 
             });
