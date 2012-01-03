@@ -2,7 +2,7 @@
  * jQuery lightweight plugin laaCarousel
  * Original author: Yann Vignolet
  * Comments: Yann Vignolet
- * Version : 1.4
+ * Version : 1.4.1
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  */
@@ -89,7 +89,7 @@
             setCarousel(self);
         }
 
-        $(this.element).bind('complete',function(){
+        $(this.element).one('complete',function(){
 
 
 
