@@ -16,7 +16,7 @@
     </head>
     <body>
         <div class="wrapper">
-
+            <div id="bouton" style="cursor: pointer;background-color: red;">bouton</div>
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
             $hauteur = 600;
@@ -40,7 +40,7 @@
 
                  <?php for ($i = 1; $i < 2; $i++)
                 { ?>
-                <div class='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
+                <div class='diaporama2' style="display: none" >
 
                     <?php for ($index = 5; $index < 9; $index++)
                         {
@@ -59,10 +59,13 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'vague',selecteur:true});
-                $('.diaporama2').laaCarousel({mode:'smooth',vignette:true});
+                $('.diaporama').laaCarousel({mode:'fade',selecteur:true});
 
 
+                 $('#bouton').click(function(e){
+                     //$('.diaporama').html($('.diaporama2').html())
+                     $('.diaporama').trigger("reload")
+                 })
             });
         </script>
     </body>

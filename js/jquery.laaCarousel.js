@@ -2,7 +2,7 @@
  * jQuery lightweight plugin laaCarousel
  * Original author: Yann Vignolet
  * Comments: Yann Vignolet
- * Version : 1.4.1
+ * Version : 1.4.2
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  */
@@ -24,6 +24,8 @@
     * @preload : gestion du prechargement des images (par defaut true)
     * @legende : affichage ou non d'une legende sur chaque image (par defaut null)
     * @vignette : ajout une serie de vignette pour passer d'une image à l'autre (par defaut false)
+    *
+    * event 'reload' sur le conteneur relancera le carousel
     */
     var pluginName = 'laaCarousel',
     defaults = {
@@ -45,7 +47,8 @@
         hauteur:null,
         click : false,
         survole : false,
-        slideTimer : null
+        slideTimer : null,
+        archive : null
 
     };
 
@@ -67,6 +70,7 @@
 
 
         var self = this;
+        this.options.archive=$(this.element).html();
         $(this.element).addClass('carouselcontainer loaderCarousel').append('<div class="animationCarousel"></div>');
         $(this.element).find("img").addClass('carousel').appendTo('.animationCarousel');
 
@@ -89,8 +93,8 @@
             setCarousel(self);
         }
 
-        $(this.element).one('complete',function(){
-
+        $(this.element).one('complete',function(event){
+            event.stopPropagation();
 
 
             setCarousel(self);
@@ -98,7 +102,29 @@
         });
 
 
+        $(this.element).one('reload',function(event){
+            event.stopPropagation();
 
+            $(self.element).find('.carousel').stop(true,true);
+            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
+            self.options.preload=false;
+            self.options.nbElement = null;
+            self.options.elementCourant = 0;
+            self.options.elementPrecedent = null;
+            self.options.largeur = null;
+            self.options.hauteur=null;
+            self.options.click = false;
+            self.options.survole = false;
+
+            $(self.element).removeClass('carouselcontainer');
+            if($(self.element).find("img").hasClass('carousel')){
+                $(self.element).html(self.options.archive)
+            }
+            //$(self.element).html(self.options.archive)
+            self.init();
+
+        });
 
 
 
