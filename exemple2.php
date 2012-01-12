@@ -35,13 +35,26 @@
 
 
             </div><!--Fin diaporama1 -->
+            <div id='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
 
+                <?php
+                for ($index = 1; $index < 10; $index++)
+                    {
+                    $letype = rand(1, 10);
+                    $count = rand(1, 10);
+                    ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                <?php } ?>
+
+
+            </div><!--Fin diaporama1 -->
         </div><!--Fin wrapper -->
 
         <script type="text/javascript">
 
             $(document).ready( function() {
                 $('#diaporama1').laaCarousel({mode:'vague',vignette:true});
+                $('#diaporama2').laaCarousel({mode:'vague',vignette:true});
 
 
             });

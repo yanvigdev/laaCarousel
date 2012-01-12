@@ -36,14 +36,14 @@
             $largeur = 490;
             ?>
             <div id='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
-                <?php for ($index = 10; $index > 1; $index--)
+                <?php for ($index = 4; $index > 1; $index--)
                     { ?>
                     <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
                 <?php } ?>
 
             </div><!--Fin diaporama2 -->
             <div id='diaporama3' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
-                <?php for ($index = 10; $index > 1; $index--)
+                <?php for ($index = 9; $index > 1; $index--)
                     { ?>
                     <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[0]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
                 <?php } ?>
@@ -55,7 +55,7 @@
             ?>
             <div id='diaporama4' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
 
-                <?php for ($index = 1; $index < 10; $index++)
+                <?php for ($index = 1; $index < 8; $index++)
                     { ?>
                     <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
                 <?php } ?>
@@ -67,14 +67,14 @@
             $largeur = 490;
             ?>
             <div id='diaporama5' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
-                <?php for ($index = 10; $index > 1; $index--)
+                <?php for ($index = 7; $index > 1; $index--)
                     { ?>
                     <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
                 <?php } ?>
 
             </div><!--Fin diaporama5 -->
             <div id='diaporama6' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
-                <?php for ($index = 10; $index > 1; $index--)
+                <?php for ($index = 5; $index > 1; $index--)
                     { ?>
                     <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[0]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
                 <?php } ?>

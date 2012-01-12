@@ -2,7 +2,7 @@
  * jQuery lightweight plugin laaCarousel
  * Original author: Yann Vignolet
  * Comments: Yann Vignolet
- * Version : 1.4.2
+ * Version : 1.4.3
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  */
@@ -87,19 +87,13 @@
         });
 
         if(this.options.preload){
-            precharger_image(this);
+            this.precharger_image();
         }
         else{
-            setCarousel(self);
+            self.setCarousel();
         }
 
-        $(this.element).one('complete',function(event){
-            event.stopPropagation();
 
-
-            setCarousel(self);
-
-        });
 
 
         $(this.element).one('reload',function(event){
@@ -119,9 +113,9 @@
 
             $(self.element).removeClass('carouselcontainer');
             if($(self.element).find("img").hasClass('carousel')){
-                $(self.element).html(self.options.archive)
+                $(self.element).html(self.options.archive);
             }
-            //$(self.element).html(self.options.archive)
+
             self.init();
 
         });
@@ -129,8 +123,38 @@
 
 
     };
-    function setCarousel(self){
+    Plugin.prototype.precharger_image = function () {
+        var self = this,
+        _done=function() {
+            self.setCarousel();
+        },i = 0;
 
+
+        $(self.element).find(".carousel").each(function() {
+            var _img = this,
+            _checki=function(e) {
+                if((_img.complete) || (_img.readyState==='complete'&&e.type==='readystatechange') )
+                {
+                    if( ++i>=self.options.nbElement ){
+                        _done();
+                    }
+                }
+                else if( _img.readyState === undefined ) // dont for IE
+                {
+                    $(_img).attr('src',$(_img).attr('src')); // re-fire load event
+                }
+            }; // _checki \\
+
+            $(_img).bind('load readystatechange', function(e){
+                _checki(e);
+            });
+            _checki({
+                type:'readystatechange'
+            }); // bind to 'load' event...
+        });
+    };
+    Plugin.prototype.setCarousel = function(){
+        var self = this;
         $(self.element).removeClass("loaderCarousel");
 
 
@@ -147,7 +171,7 @@
                     event.stopPropagation();
 
                     $(self.element).find('.carousel').stop(true,true);
-                    //$(self.element).children('.slideCarousel').stop(true,true);
+
 
                     self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
                     self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
@@ -155,7 +179,7 @@
 
                     self.options.slideTimer =clearTimeout(self.options.slideTimer);
                     self.options.click=true;
-                    startCarousel(self);
+                    self.startCarousel();
 
 
                 });
@@ -164,7 +188,7 @@
 
 
                     $(self.element).find('.carousel').stop(true,true);
-                    //$(self.element).children('.slideCarousel').stop(true,true);
+
 
                     self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
 
@@ -174,7 +198,7 @@
 
                     self.options.slideTimer =clearTimeout(self.options.slideTimer);
                     self.options.click=true;
-                    startCarousel(self);
+                    self.startCarousel();
                 });
 
             }//fin if fleche
@@ -203,7 +227,7 @@
 
 
                     self.options.click=true;
-                    startCarousel(self);
+                    self.startCarousel();
 
 
 
@@ -280,33 +304,37 @@
 
 
                     self.options.click=true;
-                    startCarousel(self);
+                    self.startCarousel();
 
 
 
                 });
             }//fin if vignette
 
-            startCarousel(self);
+            self.startCarousel();
 
 
         }
-    }
+    };
 
 
 
 
+    Plugin.prototype.startCarousel = function(){
+        var self = this;
 
-    function startCarousel(self){
-        update(self);
+        self.update();
 
         switch (self.options.mode) {
             case 'fade':
                 if(!self.options.click){
-                    $(self.element).find(".carousel").stop().fadeOut(0);
+                    $(self.element).find(".carousel").css({
+                        'left':0,
+                        'top':0
+                    }).stop().fadeOut(0);
                     $(self.element).find(".carousel:first").stop().show().addClass('active');
                 }
-                fade(self);
+                self.fade();
 
                 break;
             case 'slide':
@@ -328,7 +356,7 @@
 
 
                 }
-                slide(self);
+                self.slide();
 
 
                 break;
@@ -336,18 +364,18 @@
                 if(!self.options.click){
 
                     $(self.element).find(".carousel").stop().fadeOut(0);
-                    splitCarousel(self,50);
+                    self.splitCarousel(50);
                     $(self.element).find(".carousel:first").addClass('active');
 
                 }
 
-                vague(self);
+                self.vague();
                 break;
             case 'smooth':
                 if(!self.options.click){
 
                     $(self.element).find(".carousel").stop().fadeOut(0);
-                    splitCarousel(self,50);
+                    self.splitCarousel(50);
                     $(self.element).find('.splitCarousel').css({
                         'z-index':1
                     }).find('div').animate({
@@ -358,17 +386,14 @@
                     },0);
                 }
 
-                smooth(self);
+                self.smooth();
                 break;
         }
-    }
-    function splitCarousel(self,nbrSplit){
-
-        if (!nbrSplit) {
-            nbrSplit = 10;
-        }
-        var urlImage;
-        var largeurSplit  = (self.options.largeur/nbrSplit);
+    };
+    Plugin.prototype.splitCarousel = function(nbrSplit){
+        var self = this,
+        urlImage,
+        largeurSplit  = (self.options.largeur/nbrSplit);
         $(self.element).children('.animationCarousel').find('img.carousel').each(function(index){
 
             if((index+1)<=self.options.nbElement){/* patch pour un bug avec de multi carousel sur un meme page : le each passe aussi sur les images des autres carousel*/
@@ -394,11 +419,15 @@
 
 
 
-    }
-    function fade(self) {
+    };
+
+
+    Plugin.prototype.fade = function(){
+        var self = this;
+
         if(!self.options.click){
             self.options.elementPrecedent = self.options.elementCourant;
-            self.options.elementCourant=suivant(self.options);
+            self.options.elementCourant=self.suivant();
         }
 
         $(self.element).find('.carousel').eq(self.options.elementCourant).delay((self.options.click)?10:self.options.delay).fadeIn('slow', function() {
@@ -406,12 +435,13 @@
             $(this).addClass('active');
             self.options.click =false;
             $(this).siblings(".carousel").removeClass('active').filter(":visible").fadeOut('slow');
-            update(self);
-            fade(self);
+            self.update();
+            self.fade();
         });
 
-    }
-    function vague(self){
+    };
+    Plugin.prototype.vague = function(){
+        var self = this;
         self.options.slideTimer =clearTimeout(self.options.slideTimer);
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
@@ -421,7 +451,7 @@
         if(!self.options.click){
 
             self.options.elementPrecedent = self.options.elementCourant;
-            self.options.elementCourant=suivant(self.options);
+            self.options.elementCourant=self.suivant();
         }else{
             $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
                 'z-index':1
@@ -449,14 +479,15 @@
         $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active').css({
             'z-index':1
         });
-        update(self);
+        self.update();
         self.options.click =false;
         self.options.slideTimer= setTimeout( function() {
-            vague(self);
+            self.vague();
         },self.options.delay);
-    /*$(self.element).find('.splitCarousel').eq(self.options.elementPrecedent)*/
-    }
-    function smooth(self){
+
+    };
+    Plugin.prototype.smooth = function(){
+        var self = this, delais= 300;
         self.options.slideTimer =clearTimeout(self.options.slideTimer);
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
@@ -466,7 +497,7 @@
         if(!self.options.click){
 
             self.options.elementPrecedent = self.options.elementCourant;
-            self.options.elementCourant=suivant(self.options);
+            self.options.elementCourant=self.suivant();
         }else{
             $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
                 'z-index':1
@@ -479,13 +510,13 @@
         }
 
 
-        var delais= 300;
+
 
         $(self.element).find('.splitCarousel').eq(self.options.elementCourant).css({
             'z-index':2
-        }).find('div').each(function(index){
+        }).find('div').each(function(){
 
-            //$(this).stop().delay(delais).fadeIn('slow');
+
             $(this).stop().delay(delais).animate({
                 'opacity':1
             },'slow');
@@ -493,23 +524,24 @@
 
         });
         $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
-        update(self);
+        self.update();
         self.options.click =false;
         self.options.slideTimer= setTimeout( function() {
-            smooth(self);
+            self.smooth();
         },self.options.delay);
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
         });
-    }
-    function slide(self) {
+    };
+    Plugin.prototype.slide = function(){
+        var self = this;
         self.options.slideTimer =clearTimeout(self.options.slideTimer);
 
 
         if(!self.options.click){
 
             self.options.elementPrecedent = self.options.elementCourant;
-            self.options.elementCourant=suivant(self.options);
+            self.options.elementCourant=self.suivant();
 
         }
 
@@ -520,33 +552,27 @@
         $(self.element).find(".slideCarousel").stop().animate({
             'left': '-'+(self.options.largeur* self.options.elementCourant)+'px'
         }, 'slow' , function() {
-            update(self);
+            self.update();
             $(self.element).find(".slideCarousel").find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
             self.options.click =false;
-
-
-
         });
-
-
         self.options.slideTimer= setTimeout( function() {
-            slide(self);
+            self.slide();
         },self.options.delay);
+    };
 
-
-
-    }
-
-    function suivant(options) {
+    Plugin.prototype.suivant = function(){
+        var self = this;
         var num = 0;
-        num  = Number(options.elementCourant) + 1;
-        if(num  === options.nbElement) {
+        num  = Number(self.options.elementCourant) + 1;
+        if(num  === self.options.nbElement) {
             num  = 0;
         }
 
         return num;
-    }
-    function update(self){
+    };
+    Plugin.prototype.update = function(){
+        var self = this;
 
         if(self.options.selecteur){
             $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
@@ -584,50 +610,9 @@
 
             $(self.element).find(".legendCarousel>p").html(legende);
         }
-    }
-
-    function precharger_image(self)
-    {
+    };
 
 
-
-
-        var _done=function() {
-            $(self.element).trigger('complete');
-        },i = 0;
-
-
-        $(self.element).find(".carousel").each(function() {
-            var _img = this,
-            _checki=function(e) {
-                if((_img.complete) || (_img.readyState==='complete'&&e.type==='readystatechange') )
-                {
-                    //console.log($(self.element).attr('class')+' load : '+(i+1)+'/'+self.options.nbElement)
-                    if( ++i>=self.options.nbElement ){
-                        //console.log($(self.element).attr('class')+' complete ')
-                        _done();
-                    }
-                }
-                else if( _img.readyState === undefined ) // dont for IE
-                {
-                    $(_img).attr('src',$(_img).attr('src')); // re-fire load event
-                }
-            }; // _checki \\
-
-            $(_img).bind('load readystatechange', function(e){
-                _checki(e);
-            });
-            _checki({
-                type:'readystatechange'
-            }); // bind to 'load' event...
-
-
-        });
-
-
-
-
-    }
 
     $.fn[pluginName] = function ( options ) {
         return this.each(function () {

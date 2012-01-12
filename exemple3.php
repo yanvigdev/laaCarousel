@@ -63,7 +63,7 @@
 
 
                  $('#bouton').click(function(e){
-                     //$('.diaporama').html($('.diaporama2').html())
+                     $('.diaporama').html($('.diaporama2').html())
                      $('.diaporama').trigger("reload")
                  })
             });
