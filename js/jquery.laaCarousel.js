@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.4
+ * Version : 1.4.5
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -26,25 +26,27 @@
     */
     var pluginName = 'laaCarousel',
     defaults = {
-        delay: "3000", //délais en milliseconde (par defaut 3000)
+        delay: 3000, //délais en milliseconde (par defaut 3000)
         mode : "fade", //mode de transition (par defaut fade)
+        largeur : undefined, //largeur de l'affichage du carousel
+        hauteur: undefined, //hauteur de l'affichage du carousel
         fleche : false,//afficher des flêches pour passé à l'image suivante ou precedente (par defaut false)
         selecteur : false, //afficher une serie de bouton pour passé d'une image à l'autre (par defaut false)
         preload : true, //gestion du prechargement des images (par defaut true)
         legende : null, //affichage ou non d'une legende sur chaque image (par defaut null)
         vignette : false, //ajout une serie de vignette pour passer d'une image à l'autre (par defaut false)
         vignetteHauteur : 50, //hauteur des vignettes (par defaut 50)
-        vignetteLargeur : 50 //largeur des vignettes (par defaut 50)
+        vignetteLargeur : 50, //largeur des vignettes (par defaut 50),
+        autoplay : true //fonction de mise en route des transitions
     },
     settings = {
         nbElement : null, //nombre d'image composant le carousel
         elementCourant : 0, //index de l'image encourt d'execution
         elementPrecedent : null, //index de l'image précèdement executée
-        largeur : null, //largeur de l'affichage du carousel
-        hauteur:null, //hauteur de l'affichage du carousel
+        slideMouvementH : 0, //amplitude du mouvement pour l'effet de slide horizontal
         click : false,
         survole : false,
-        slideTimer : null, //temps qui defini le rythme du carousel
+        tempo : null, //temps qui defini le rythme du carousel
         archive : null //contenu initiale avant changement par ce Plugin
 
     };
@@ -71,27 +73,65 @@
     Plugin.prototype.init = function () {
 
 
-        var self = this;
-        this.options.archive=$(this.element).html();
-        $(this.element).addClass('carouselcontainer loaderCarousel').append('<div class="animationCarousel"></div>');
-        $(this.element).find("img").addClass('carousel').appendTo('.animationCarousel');
+        var self = this,largeurOrigine=$(self.element).width(),hauteurOrigine=$(self.element).height();
 
-        $(this.element).find('.animationCarousel').height($(this.element).height()).width($(this.element).width());
+        self.options.archive=$(self.element).html();
+        $(self.element).addClass('carouselcontainer loaderCarousel').append('<div class="animationCarousel"></div>');
+        $(self.element).find("img").addClass('carousel').appendTo($(self.element).find('.animationCarousel'));
 
-        this.options.largeur = $(this.element).width();
-        this.options.hauteur = $(this.element).height();
-        this.options.nbElement = $(this.element).find('.carousel').length;
 
-        this.options.elementPrecedent = this.options.nbElement;
 
-        $(this.element).find(".carousel").each(function(index) {
+        if(!self.options.largeur){
+            if($(self.element).width()>0){
+                self.options.largeur = $(self.element).width();
+
+            }else{
+                self.error('largeur');
+            }
+        }
+        if(!self.options.hauteur){
+            if($(self.element).height()>0){
+                self.options.hauteur = $(self.element).height();
+
+            }else{
+                self.error('hauteur');
+            }
+        }
+        $(self.element).find('.animationCarousel').height(self.options.hauteur).width(self.options.largeur);
+        $(self.element).find('.carousel').each(function(){
+            if(self.options.hauteur!==$(this).height()){
+                $(this).attr('width',parseInt(self.options.hauteur*$(this).width()/$(this).height()));
+                $(this).attr('height',self.options.hauteur);
+            }
+            if(self.options.largeur!==$(this).width()){
+
+                var marge = ((self.options.largeur-$(this).width())/2);
+                //marge= marge*((self.options.largeur<$(this).width())?1:-1)
+                $(this).css({
+                    'margin-left':marge+'px',
+                    'margin-right':marge+'px'
+                });
+            }
+        });
+
+
+
+
+
+        self.options.nbElement = $(self.element).find('.carousel').length;
+
+        self.options.elementPrecedent = self.options.nbElement;
+
+        $(self.element).find(".carousel").each(function(index) {
             $(this).attr('data', index);
         });
 
-        if(this.options.preload){
-            this.precharger_image();
+        if(self.options.preload){
+            $(self.element).prepend('<div class="loaderCarouselBar"><div class="loaderCarouselProgressLeft"></div><div class="loaderCarouselProgress"></div><div class="loaderCarouselProgressRight"></div></div>');
+            self.precharger_image();
         }
         else{
+
             self.setCarousel();
         }
 
@@ -102,14 +142,13 @@
             event.stopPropagation();
 
             $(self.element).find('.carousel').stop(true,true);
-            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+            self.options.tempo =clearTimeout(self.options.tempo);
 
-            self.options.preload=false;
             self.options.nbElement = null;
             self.options.elementCourant = 0;
             self.options.elementPrecedent = null;
-            self.options.largeur = null;
-            self.options.hauteur=null;
+            //self.options.largeur = null;
+            // self.options.hauteur=null;
             self.options.click = false;
             self.options.survole = false;
 
@@ -117,7 +156,7 @@
             if($(self.element).find("img").hasClass('carousel')){
                 $(self.element).html(self.options.archive);
             }
-
+            $(self.element).height(hauteurOrigine).width(largeurOrigine);
             self.init();
 
         });
@@ -130,11 +169,15 @@
      *
      */
     Plugin.prototype.precharger_image = function () {
+
+
         var self = this,
         _done=function() {
+
             self.setCarousel();
+
             return true;
-        },i = 0;
+        },i = 0,loaderCarouselProgress = 168/self.options.nbElement;
 
 
         $(self.element).find(".carousel").each(function() {
@@ -142,9 +185,15 @@
             _checki=function(e) {
                 if((_img.complete) || (_img.readyState==='complete'&&e.type==='readystatechange') )
                 {
-                    if( ++i>=self.options.nbElement ){
-                        _done();
-                    }
+                    $(self.element).find('.loaderCarouselProgress').animate({
+                        'width':'+='+loaderCarouselProgress+'px'
+                    },'fast','linear',function(){
+                        if( ++i>=self.options.nbElement ){
+                            _done();
+                        }
+                    });
+
+
                 }
                 else if( _img.readyState === undefined ) // dont for IE
                 {
@@ -166,7 +215,7 @@
      */
     Plugin.prototype.setCarousel = function(){
         var self = this;
-        $(self.element).removeClass("loaderCarousel");
+
 
 
         if(self.options.nbElement>1){
@@ -186,13 +235,18 @@
                 self.vignette();
             }
 
+
+
             self.startCarousel();
+
         }else{
-            $(self.element).find('.carousel').css({
+            /*$(self.element).find('.carousel').css({
                 "top":0,
                 "left":0
-            });//place l'unique image au centre du container
+            });*///place l'unique image au centre du container
+            $(self.element).removeClass('loaderCarousel').find('.loaderCarouselBar').remove();
         }
+
     };
     /**
      * Méthode qui ajout des fleches pour passer à l'image suivante ou précèdente
@@ -211,9 +265,9 @@
             self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
 
 
-            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+            //self.options.tempo =clearTimeout(self.options.tempo);
             self.options.click=true;
-            self.startCarousel();
+            self.play();
 
 
         });
@@ -230,9 +284,9 @@
             self.options.elementCourant =((self.options.elementPrecedent+1)>=(self.options.nbElement))?0:(self.options.elementPrecedent+1);
 
 
-            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+            //self.options.tempo =clearTimeout(self.options.tempo);
             self.options.click=true;
-            self.startCarousel();
+            self.play();
         });
     };
     /**
@@ -257,13 +311,13 @@
 
             self.options.elementCourant =Number($(this).attr('data'));
 
-            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+            //self.options.tempo =clearTimeout(self.options.tempo);
 
 
 
 
             self.options.click=true;
-            self.startCarousel();
+            self.play();
 
 
 
@@ -310,7 +364,7 @@
             'height':self.options.vignetteHauteur+'px',
             'width':self.options.vignetteLargeur+'px'
         });
-        var containerHauteur= $(self.element).find(".vignetteCarousel").children("div:first").outerHeight(true);
+        /*var containerHauteur= $(self.element).find(".vignetteCarousel").children("div:first").outerHeight(true);
         var containerLargeur= $(self.element).find(".vignetteCarousel").children("div:first").outerWidth(true);
 
         containerLargeur=(parseInt(self.options.largeur/containerLargeur,10)>self.options.nbElement)?containerLargeur*self.options.nbElement:parseInt(self.options.largeur/containerLargeur,10)*containerLargeur;
@@ -318,10 +372,15 @@
 
         var centrage = (self.options.largeur-containerLargeur)/2;
         $(self.element).height(containerHauteur+$(self.element).height());
+
         $(self.element).find('.vignetteCarousel').css({
             'width':containerLargeur+'px',
             'height':containerHauteur+'px',
             'margin-left':centrage+'px'
+        });*/
+        $(self.element).css({
+            'width':'auto',
+            'height':'auto'
         });
         $(self.element).find(".vignetteCarousel").find("div:first").addClass('select');
         $(self.element).find(".vignetteCarousel").find("img").live('click', function(event) {
@@ -336,20 +395,21 @@
 
             self.options.elementCourant =Number($(this).attr('data'));
 
-            self.options.slideTimer =clearTimeout(self.options.slideTimer);
+            self.options.tempo =clearTimeout(self.options.tempo);
 
 
 
 
             self.options.click=true;
-            self.startCarousel();
+            self.play();
 
 
 
         });
     };
+
     /**
-     * Méthode qui lance l'animation du carousel
+     * Méthode qui place les elements de l'animation du carousel au premier lancement
      */
     Plugin.prototype.startCarousel = function(){
         var self = this;
@@ -358,60 +418,72 @@
 
         switch (self.options.mode) {
             case 'fade':
-                if(!self.options.click){
-                    $(self.element).find(".carousel").addClass("fadeCarousel").stop().fadeOut(0);
-                    $(self.element).find(".carousel:first").stop().show().addClass('active');
-                }
-                self.fade();
+
+                $(self.element).find(".carousel").animate({
+                    opacity:0
+                },0).addClass("fadeCarousel");
+                $(self.element).find(".carousel:first").stop().animate({
+                    opacity:1
+                },0).addClass('active');
 
                 break;
             case 'slide':
-                if(!self.options.click){
-                    $(self.element).find('.animationCarousel').prepend("<div class='slideCarousel'></div>");
-                    $(self.element).find(".slideCarousel").css({
-                        "width": (self.options.largeur*self.options.nbElement)+"px"
-                    });
-                    $(self.element).find(".slideCarousel").append($(self.element).find(".carousel"));
-                    $(self.element).find(".carousel").each(function(index){
-                        $(this).css({
-                            'float':"left",
-                            'position':"relative"
-                        });
+                self.options.slideMouvementH=$(self.element).find(".carousel:first").outerWidth(true);
 
+                $(self.element).find('.animationCarousel').prepend("<div class='slideCarousel'></div>");
+
+                $(self.element).find(".slideCarousel").append($(self.element).find(".carousel"));
+                var totaleLargeur=0
+                $(self.element).find(".carousel").each(function(index){
+                    $(this).css({
+                        'float':"left",
+                        'position':"relative"
                     });
-                    $(self.element).find(".carousel:first").addClass('active');
-                }
-                self.slide();
+                    totaleLargeur=totaleLargeur+$(this).outerWidth(true)
+
+                });
+                $(self.element).find(".slideCarousel").css({
+                    "width": (totaleLargeur)+"px"
+                });
+
+                $(self.element).find(".carousel:first").addClass('active');
+
                 break;
             case 'vague':
-                if(!self.options.click){
 
-                    $(self.element).find(".carousel").stop().fadeOut(0);
-                    self.splitCarousel(50);
-                    $(self.element).find(".carousel:first").addClass('active');
 
-                }
+                $(self.element).find(".carousel").stop().fadeOut(0);
+                self.splitCarousel(50);
+                $(self.element).find(".carousel:first").addClass('active').find('div').stop().css({'top':0});
 
-                self.vague();
+
+
+
                 break;
             case 'smooth':
-                if(!self.options.click){
 
-                    $(self.element).find(".carousel").stop().fadeOut(0);
-                    self.splitCarousel(50);
-                    $(self.element).find('.splitCarousel').css({
-                        'z-index':1
-                    }).find('div').animate({
-                        'opacity':0
-                    },0);
-                    $(self.element).find(".carousel:first").addClass('active').find('div').animate({
-                        'opacity':1
-                    },0);
-                }
 
-                self.smooth();
+                $(self.element).find(".carousel").stop().fadeOut(0);
+                self.splitCarousel(50);
+                $(self.element).find('.splitCarousel').css({
+                    'z-index':1
+                }).find('div').animate({
+                    'opacity':0
+                },0);
+                $(self.element).find(".carousel:first").addClass('active').find('div').animate({
+                    'opacity':1
+                },0);
+
+
+
                 break;
         }
+        $(self.element).removeClass('loaderCarousel').find('.loaderCarouselBar').remove();
+        self.options.tempo= setTimeout( function() {
+            self.play();
+
+        },self.options.delay);
+
     };
     /**
      * Méthode qui est utilisé en amont des effets de transition 'vague' et 'smooth'
@@ -425,29 +497,74 @@
         i = 0;
         $(self.element).children('.animationCarousel').find('img.carousel').each(function(index){
 
-            if((index+1)<=self.options.nbElement){/* patch pour un bug avec de multi carousel sur un meme page : le each passe aussi sur les images des autres carousel*/
+            //if((index+1)<=self.options.nbElement){/* patch pour un bug avec de multi carousel sur un meme page : le each passe aussi sur les images des autres carousel*/
 
-                urlImage = $(this).attr('src');
-                $(self.element).children('.animationCarousel').append("<div class='splitCarousel carousel' data='"+$(this).attr('data')+"' alt='"+$(this).attr('alt')+"'></div>");
+            urlImage = $(this).attr('src');
 
-                if(self.options.mode==='vague'){
-                    for (i = 0; i < nbrSplit; i++) {
-                        $(self.element).children('.animationCarousel').find('.splitCarousel').eq(index).append("<div style='left:"+(i*largeurSplit-1)+"px;top:"+self.options.hauteur+"px;width:"+(largeurSplit+1)+"px;height:"+self.options.hauteur+"px;background : url("+urlImage+") "+((largeurSplit*i-1)*-1)+"px top no-repeat;'></div>");
-                    }
+            $(self.element).children('.animationCarousel').append("<div class='splitCarousel carousel' data='"+$(this).attr('data')+"' alt='"+$(this).attr('alt')+"'></div>");
+
+            if(self.options.mode==='vague'){
+                for (i = 0; i < nbrSplit; i++) {
+                    $(self.element).children('.animationCarousel').find('.splitCarousel').eq(index).append("<div style='left:"+(i*largeurSplit-1)+"px;top:"+self.options.hauteur+"px;width:"+(largeurSplit+1)+"px;height:"+self.options.hauteur+"px;background : url("+urlImage+") "+((largeurSplit*i-1)*-1)+"px top no-repeat;'></div>");
                 }
-                if(self.options.mode==='smooth'){
-                    for (i = 0; i < nbrSplit; i++) {
-                        $(self.element).children('.animationCarousel').find('.splitCarousel').eq(index).append("<div style='left:"+(i*largeurSplit-1)+"px;top:0;width:"+(largeurSplit+1)+"px;height:"+self.options.hauteur+"px;background : url("+urlImage+") "+((largeurSplit*i-1)*-1)+"px top no-repeat;'></div>");
-                    }
-
+            }
+            if(self.options.mode==='smooth'){
+                for (i = 0; i < nbrSplit; i++) {
+                    $(self.element).children('.animationCarousel').find('.splitCarousel').eq(index).append("<div style='left:"+(i*largeurSplit-1)+"px;top:0;width:"+(largeurSplit+1)+"px;height:"+self.options.hauteur+"px;background : url("+urlImage+") "+((largeurSplit*i-1)*-1)+"px top no-repeat;'></div>");
                 }
-            }//*fin du patch*/
-            $(self.element).find('img.carousel').remove();
+
+            }
+            // }//*fin du patch*/
+
+            $(self.element).children('.animationCarousel').find('.splitCarousel').css({
+                'width':$(this).width(),
+                'margin-right':$(this).css('margin-right'),
+                'margin-left':$(this).css('margin-left')
+            })
 
         });
 
+        $(self.element).find('img.carousel').remove();
+
+    };
+    /**
+     * méthode qui gere le rythme des animations
+     */
+    Plugin.prototype.play = function(){
+        var self = this;
+        //self.update();
+
+        self.options.tempo =clearTimeout(self.options.tempo);
 
 
+        if(self.options.autoplay){
+            switch (self.options.mode) {
+                case 'fade':
+
+                    self.fade();
+
+                    break;
+                case 'slide':
+
+                    self.slide();
+                    break;
+                case 'vague':
+
+                    self.vague();
+                    break;
+                case 'smooth':
+
+                    self.smooth();
+                    break;
+            }//fin switch
+        }//if autoplay
+
+        self.options.tempo= setTimeout( function() {
+            self.play();
+
+        },self.options.delay);
+
+        self.update();
     };
     /**
      * Méthode qui gere la transition fade. Alpha de 0 à 1 sur chaque image de maniere alterné.
@@ -460,13 +577,19 @@
             self.options.elementCourant=self.suivant();
         }
 
-        $(self.element).find('.carousel').eq(self.options.elementCourant).delay((self.options.click)?10:self.options.delay).fadeIn('slow', function() {
+        $(self.element).find('.carousel').eq(self.options.elementCourant).animate({
+            opacity:1
+        },'slow', function() {
 
             $(this).addClass('active');
             self.options.click =false;
-            $(this).siblings(".carousel").removeClass('active').filter(":visible").fadeOut('slow');
-            self.update();
-            self.fade();
+            $(this).siblings(".carousel").removeClass('active').filter(":visible").animate({
+                opacity:0
+            },'slow');
+
+
+
+
         });
 
     };
@@ -475,7 +598,7 @@
      */
     Plugin.prototype.vague = function(){
         var self = this;
-        self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
         }).find('div').css({
@@ -512,11 +635,11 @@
         $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active').css({
             'z-index':1
         });
-        self.update();
+
         self.options.click =false;
-        self.options.slideTimer= setTimeout( function() {
-            self.vague();
-        },self.options.delay);
+
+
+
 
     };
     /**
@@ -524,7 +647,7 @@
      */
     Plugin.prototype.smooth = function(){
         var self = this, delais= 300;
-        self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
         }).find('div').animate({
@@ -560,11 +683,11 @@
 
         });
         $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
-        self.update();
+
         self.options.click =false;
-        self.options.slideTimer= setTimeout( function() {
-            self.smooth();
-        },self.options.delay);
+
+
+
         $(self.element).find('.splitCarousel').eq(self.options.elementPrecedent).css({
             'z-index':1
         });
@@ -574,7 +697,7 @@
      */
     Plugin.prototype.slide = function(){
         var self = this;
-        self.options.slideTimer =clearTimeout(self.options.slideTimer);
+
 
 
         if(!self.options.click){
@@ -583,21 +706,16 @@
             self.options.elementCourant=self.suivant();
 
         }
-
-
-
-
-
         $(self.element).find(".slideCarousel").stop().animate({
-            'left': '-'+(self.options.largeur* self.options.elementCourant)+'px'
+            'left': '-'+(self.options.slideMouvementH* self.options.elementCourant)+'px'
         }, 'slow' , function() {
-            self.update();
+
             $(self.element).find(".slideCarousel").find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
             self.options.click =false;
         });
-        self.options.slideTimer= setTimeout( function() {
-            self.slide();
-        },self.options.delay);
+
+
+
     };
     /**
      * Méthode qui gere le decompte de chaque image pour chaque transition.
@@ -655,7 +773,14 @@
             $(self.element).find(".legendCarousel>p").html(legende);
         }
     };
+    /**
+     * Méthode qui gere les error.
+     */
+    Plugin.prototype.error = function(type){
+        var self = this;
 
+        console.log("Le carousel est en erreur sur votre container, il manque : "+type);
+    };
 
 
     $.fn[pluginName] = function ( options ) {

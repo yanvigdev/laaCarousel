@@ -17,6 +17,7 @@
     <body>
         <div class="wrapper">
 
+
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
             $hauteur = 600;
@@ -42,7 +43,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'vague',fleche:true});
+                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:true,autoplay:true});
 
 
             });

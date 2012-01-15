@@ -9,11 +9,12 @@
 
 
 .loaderCarousel{
-    background: url(../images/loaderCarousel.gif) #ffffff no-repeat center center;
+    background: #000000 no-repeat center center;
 }
 .animationCarousel{
     overflow: hidden;
-    position: absolute;
+    position: relative;
+
 }
 .carousel{
     position: absolute;
@@ -49,10 +50,9 @@
     height: 100%;
 }
 .vignetteCarousel{
-    position: absolute;
+
     z-index: 5;
-    width: 100%;
-    min-height: 50px;
+    overflow: auto;
     bottom: 0;
 
 }
@@ -149,4 +149,36 @@
 .carouselcontainer .flecheGauche:hover{
 
     background-position: bottom left;
+}
+.loaderCarouselBar{
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 50%;
+    width: 180px;
+    height: 12px;
+    padding: 10px;
+    background: url(../images/loaderCarouselBar.png) no-repeat center center;
+    z-index: 10;
+}
+.loaderCarouselBar div{
+    float: left;
+}
+.loaderCarouselProgressLeft{
+    height: 12px;
+    width: 6px;
+    background: url(../images/loaderCarouselProgress.png) no-repeat left center;
+}
+.loaderCarouselProgressRight{
+    height: 12px;
+    width: 6px;
+    background: url(../images/loaderCarouselProgress.png) no-repeat right center;
+
+}
+.loaderCarouselProgress{
+   height: 12px;
+   /* width: 168px;*/
+   width: 0px;
+    background: url(../images/bkgLoaderCarouselBar);
 }

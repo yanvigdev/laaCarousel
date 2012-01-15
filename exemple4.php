@@ -26,8 +26,8 @@
 
                 <?php for ($index = 1; $index < 10; $index++)
                     { ?>
-                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
-                <?php } ?>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$index]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="#diaporama1 <?php echo $type[$index]; ?>"/>
+                    <?php } ?>
 
 
             </div><!--Fin diaporama1 -->
@@ -38,7 +38,7 @@
             <div id='diaporama2' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
                 <?php for ($index = 4; $index > 1; $index--)
                     { ?>
-                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$index]; ?>"/>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[10]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="#diaporama2 <?php echo $type[$index]; ?>"/>
                 <?php } ?>
 
             </div><!--Fin diaporama2 -->
@@ -85,10 +85,10 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('#diaporama1').laaCarousel({mode:'fade',vignette:true});
+                $('#diaporama1').laaCarousel({mode:'vague',vignette:true,delay:3000,fleche : true,autoplay:true});
                 $('#diaporama2').laaCarousel({mode:'slide',delay:4000});
                 $('#diaporama3').laaCarousel({mode:'vague',legend : "alt"});
-                $('#diaporama4').laaCarousel({mode:'smooth',fleche : true});
+                $('#diaporama4').laaCarousel({mode:'smooth',fleche : true,vignette:true});
                 $('#diaporama5').laaCarousel({selecteur:true});
                 $('#diaporama6').laaCarousel({preload:false});
 

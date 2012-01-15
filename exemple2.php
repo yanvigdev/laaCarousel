@@ -19,18 +19,21 @@
 
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
-            $hauteur = 400;
+            $hauteur = 700;
             $largeur = 600;
             ?>
             <div id='diaporama1' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;">
 
                 <?php
-                for ($index = 1; $index < 40; $index++)
+                for ($index = 1; $index < 5; $index++)
                     {
                     $letype = rand(1, 10);
                     $count = rand(1, 10);
+                    $largeur2=(int) ($largeur+rand(10, 40));
+                    $hauteur2=(int) ($hauteur+rand(10, 40));
                     ?>
-                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur2; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo $hauteur2 ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <img src='http://lorempixel.com/<?php echo 900 . '/' . 700; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo 700 ?>" width='<?php echo 900 ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                 <?php } ?>
 
 
@@ -42,8 +45,10 @@
                     {
                     $letype = rand(1, 10);
                     $count = rand(1, 10);
+                    $largeur2=(int) ($largeur+rand(10, 40));
+                    $hauteur2=(int) ($hauteur+rand(10, 40));
                     ?>
-                    <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <img src='http://lorempixel.com/<?php echo $largeur2 . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $count; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur2 ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                 <?php } ?>
 
 
@@ -53,8 +58,8 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('#diaporama1').laaCarousel({mode:'vague',vignette:true});
-                $('#diaporama2').laaCarousel({mode:'vague',vignette:true});
+                $('#diaporama1').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300});
+                $('#diaporama2').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300,fleche:true});
 
 
             });

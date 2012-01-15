@@ -24,13 +24,14 @@
             ?>
             <?php for ($i = 1; $i < 2; $i++)
                 { ?>
-                <div class='diaporama' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
+                <div class='diapora' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
 
                     <?php for ($index = 1; $index < 5; $index++)
                         {
-                        $letype=rand(1, 10)
+                        $letype=rand(1, 10);
+                        $largeur2=$largeur+rand(10, 40);
                         ?>
-                        <img src='images/<?php echo $index; ?>.jpeg' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                        <img src='images/<?php echo $index; ?>.jpeg' height="<?php echo $hauteur ?>" width='<?php echo $largeur2 ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                     <?php }; ?>
 
                 </div>
@@ -59,12 +60,12 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'fade',selecteur:true});
+                $('.diapora').laaCarousel({mode:'fade',vignette:true,hauteur:600,width:980,autoplay:true});
 
 
                  $('#bouton').click(function(e){
-                     $('.diaporama').html($('.diaporama2').html())
-                     $('.diaporama').trigger("reload")
+                     $('.diapora').html($('.diaporama2').html())
+                     $('.diapora').trigger("reload")
                  })
             });
         </script>
