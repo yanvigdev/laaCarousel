@@ -2,7 +2,7 @@ html, body{
     height: 100%;
 }
 body{
-    background-color: black;
+    background-color: #DDDDDD;
     color: white;
 }
 .wrapper{
@@ -12,5 +12,5 @@ body{
 }
 #diaporama1,#diaporama2, #diaporama3,#diaporama5, #diaporama6{
 float: left;
-border: solid 2px white;
+
 }

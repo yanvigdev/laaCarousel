@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.6
+ * Version : 1.4.7
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -24,7 +24,7 @@
     *
     * event 'reload' sur le conteneur relancera l'execution du carousel en cas de changement de contenu
     */
-    var pluginName = 'laaCarousel',
+    var pluginName = 'laaCarousel',callback,
     defaults = {
         delay: 3000, //délais en milliseconde (par defaut 3000)
         mode : "fade", //mode de transition (par defaut fade)
@@ -55,10 +55,12 @@
      *Constructeur
      *
      */
-    function Plugin( element, options ) {
+    function Plugin( element, options,callback ) {
         this.element = element;
 
-
+        if( typeof callback === 'function' ){
+            this.callback=callback;
+        }
 
         this.options = $.extend( {}, defaults, options,settings) ;
 
@@ -100,13 +102,13 @@
         $(self.element).find('.animationCarousel').height(self.options.hauteur).width(self.options.largeur);
         self.options.allCarousel.each(function(index){
             if(self.options.hauteur!==$(this).height()){
-                $(this).attr('width',parseInt(self.options.hauteur*$(this).width()/$(this).height()));
+                $(this).attr('width',parseInt(self.options.hauteur*$(this).width()/$(this).height(),10));
                 $(this).attr('height',self.options.hauteur);
             }
             if(self.options.largeur!==$(this).width()){
 
                 var marge = ((self.options.largeur-$(this).width())/2);
-                //marge= marge*((self.options.largeur<$(this).width())?1:-1)
+
                 $(this).css({
                     'margin-left':marge+'px',
                     'margin-right':marge+'px'
@@ -176,10 +178,10 @@
             self.setCarousel();
 
             return true;
-        },i = 0,loaderCarouselProgress = 167/self.options.nbElement;
+        },i = 0,loaderCarouselProgress = parseInt(168/self.options.nbElement,10);
 
 
-        $(self.element).find(".carousel").each(function() {
+        self.options.allCarousel.each(function() {
             var _img = this,
             _checki=function(e) {
                 if((_img.complete) || (_img.readyState==='complete'&&e.type==='readystatechange') )
@@ -257,14 +259,12 @@
         $(self.element).find('.flecheGauche').live('click', function(event) {
             event.stopPropagation();
 
-            $(self.element).find('.carousel').stop(true,true);
+            self.options.allCarousel.stop(true,true);
 
 
             self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
             self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
 
-
-            //self.options.tempo =clearTimeout(self.options.tempo);
             self.options.click=true;
             self.play();
 
@@ -274,7 +274,7 @@
             event.stopPropagation();
 
 
-            $(self.element).find('.carousel').stop(true,true);
+            self.options.allCarousel.stop(true,true);
 
 
             self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
@@ -282,8 +282,6 @@
 
             self.options.elementCourant =((self.options.elementPrecedent+1)>=(self.options.nbElement))?0:(self.options.elementPrecedent+1);
 
-
-            //self.options.tempo =clearTimeout(self.options.tempo);
             self.options.click=true;
             self.play();
         });
@@ -302,18 +300,13 @@
             event.stopPropagation();
 
 
-            $(self.element).find('.carousel').stop(true,true);
+            self.options.allCarousel.stop(true,true);
 
 
             self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
 
 
             self.options.elementCourant =Number($(this).attr('data'));
-
-            //self.options.tempo =clearTimeout(self.options.tempo);
-
-
-
 
             self.options.click=true;
             self.play();
@@ -337,7 +330,7 @@
         var self = this;
         var vignetteRatio = self.options.vignetteHauteur / self.options.vignetteLargeur;
         $(self.element).append("<div class='vignetteCarousel'></div>");
-        $(self.element).find(".carousel").each(function(index){
+        self.options.allCarousel.each(function(index){
             var carouselRatio =  $(this).height() / $(this).width(), hauteur,largeur,style;
 
             if (vignetteRatio > carouselRatio)
@@ -386,8 +379,8 @@
             event.stopPropagation();
 
 
-            $(self.element).find('.carousel').stop(true,true);
-            $(self.element).find('.carousel').find('div').stop();
+            self.options.allCarousel.stop(true,true);
+            self.options.allCarousel.find('div').stop();
 
             self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
 
@@ -418,7 +411,7 @@
         switch (self.options.mode) {
             case 'fade':
 
-                $(self.element).find(".carousel").animate({
+                self.options.allCarousel.animate({
                     opacity:0
                 },0).addClass("fadeCarousel");
                 $(self.element).find(".carousel:first").stop().animate({
@@ -432,13 +425,13 @@
                 $(self.element).find('.animationCarousel').prepend("<div class='slideCarousel'></div>");
 
                 $(self.element).find(".slideCarousel").append($(self.element).find(".carousel"));
-                var totaleLargeur=0
-                $(self.element).find(".carousel").each(function(index){
+                var totaleLargeur=0;
+                self.options.allCarousel.each(function(index){
                     $(this).css({
                         'float':"left",
                         'position':"relative"
                     });
-                    totaleLargeur=totaleLargeur+$(this).outerWidth(true)
+                    totaleLargeur=totaleLargeur+$(this).outerWidth(true);
 
                 });
                 $(self.element).find(".slideCarousel").css({
@@ -451,9 +444,11 @@
             case 'vague':
 
 
-                $(self.element).find(".carousel").stop().fadeOut(0);
+                self.options.allCarousel.stop().fadeOut(0);
                 self.splitCarousel(50);
-                $(self.element).find(".carousel:first").addClass('active').find('div').stop().css({'top':0});
+                $(self.element).find(".carousel:first").addClass('active').find('div').stop().css({
+                    'top':0
+                });
 
 
 
@@ -462,7 +457,7 @@
             case 'smooth':
 
 
-                $(self.element).find(".carousel").stop().fadeOut(0);
+                self.options.allCarousel.stop().fadeOut(0);
                 self.splitCarousel(50);
                 $(self.element).find('.splitCarousel').css({
                     'z-index':1
@@ -496,7 +491,7 @@
         i = 0;
         $(self.element).children('.animationCarousel').find('img.carousel').each(function(index){
 
-            //if((index+1)<=self.options.nbElement){/* patch pour un bug avec de multi carousel sur un meme page : le each passe aussi sur les images des autres carousel*/
+
 
             urlImage = $(this).attr('src');
 
@@ -513,17 +508,18 @@
                 }
 
             }
-            // }//*fin du patch*/
+
 
             $(self.element).children('.animationCarousel').find('.splitCarousel').css({
                 'width':$(this).width(),
                 'margin-right':$(this).css('margin-right'),
                 'margin-left':$(this).css('margin-left')
-            })
+            });
 
         });
 
         $(self.element).find('img.carousel').remove();
+        self.options.allCarousel=$(self.element).find('.carousel');
 
     };
     /**
@@ -531,7 +527,6 @@
      */
     Plugin.prototype.play = function(){
         var self = this;
-        //self.update();
 
         self.options.tempo =clearTimeout(self.options.tempo);
 
@@ -576,7 +571,7 @@
             self.options.elementCourant=self.suivant();
         }
 
-        $(self.element).find('.carousel').eq(self.options.elementCourant).animate({
+        self.options.allCarousel.eq(self.options.elementCourant).animate({
             opacity:1
         },'slow', function() {
 
@@ -613,7 +608,7 @@
             }).find('div').stop().css({
                 'top':0
             });
-            $(self.element).find('.carousel').eq(self.options.elementPrecedent).siblings(".carousel").find('div').stop().css({
+            self.options.allCarousel.eq(self.options.elementPrecedent).siblings(".carousel").find('div').stop().css({
                 'top':$(self.element).find('.splitCarousel').height()
             });
         }
@@ -631,7 +626,7 @@
             delais= delais+10;
 
         });
-        $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active').css({
+        self.options.allCarousel.eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active').css({
             'z-index':1
         });
 
@@ -662,7 +657,7 @@
             }).find('div').stop().animate({
                 'opacity':1
             },0);
-            $(self.element).find('.carousel').eq(self.options.elementPrecedent).siblings(".carousel").find('div').stop().animate({
+            self.options.allCarousel.eq(self.options.elementPrecedent).siblings(".carousel").find('div').stop().animate({
                 'opacity':0
             },0);
         }
@@ -681,7 +676,7 @@
             delais= delais+10;
 
         });
-        $(self.element).find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
+        self.options.allCarousel.eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
 
         self.options.click =false;
 
@@ -767,10 +762,11 @@
         }
         if(self.options.legende!==null){
 
-            var legende = $(self.element).find(".carousel").eq(self.options.elementCourant).attr(self.options.legende);
+            var legende = self.options.allCarousel.eq(self.options.elementCourant).attr(self.options.legende);
 
             $(self.element).find(".legendCarousel>p").html(legende);
         }
+        this.callback(self);
     };
     /**
      * Méthode qui gere les error.
@@ -782,10 +778,10 @@
     };
 
 
-    $.fn[pluginName] = function ( options ) {
+    $.fn[pluginName] = function ( options , callback) {
         return this.each(function () {
             if (!$.data(this, 'plugin_' + pluginName)) {
-                $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
+                $.data(this, 'plugin_' + pluginName, new Plugin( this, options , callback));
             }
         });
     };

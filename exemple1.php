@@ -43,7 +43,9 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:true,autoplay:true});
+                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:true,autoplay:true},function(e){
+                    
+                });
 
 
             });

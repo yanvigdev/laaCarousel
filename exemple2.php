@@ -58,7 +58,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('#diaporama1').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300});
+                $('#diaporama1').laaCarousel({mode:'vague',vignette:true,largeur:700,hauteur:300});
                 $('#diaporama2').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300,fleche:true});
 
 
