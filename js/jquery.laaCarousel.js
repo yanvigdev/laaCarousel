@@ -44,11 +44,11 @@
         elementCourant : 0, //index de l'image encourt d'execution
         elementPrecedent : null, //index de l'image précèdement executée
         slideMouvementH : 0, //amplitude du mouvement pour l'effet de slide horizontal
-        click : false,
+        click : false,  //indicateur de click de l'utilisateur
         survole : false,
         tempo : null, //temps qui defini le rythme du carousel
-        archive : null //contenu initiale avant changement par ce Plugin
-
+        archive : null, //contenu initiale avant changement par ce Plugin
+        allCarousel : null //contient la selection de tout les carousel qui compose la galerie
     };
 
     /**
@@ -78,7 +78,7 @@
         self.options.archive=$(self.element).html();
         $(self.element).addClass('carouselcontainer loaderCarousel').append('<div class="animationCarousel"></div>');
         $(self.element).find("img").addClass('carousel').appendTo($(self.element).find('.animationCarousel'));
-
+        self.options.allCarousel = $(self.element).find('.carousel');
 
 
         if(!self.options.largeur){
@@ -98,7 +98,7 @@
             }
         }
         $(self.element).find('.animationCarousel').height(self.options.hauteur).width(self.options.largeur);
-        $(self.element).find('.carousel').each(function(){
+        self.options.allCarousel.each(function(index){
             if(self.options.hauteur!==$(this).height()){
                 $(this).attr('width',parseInt(self.options.hauteur*$(this).width()/$(this).height()));
                 $(this).attr('height',self.options.hauteur);
@@ -112,19 +112,18 @@
                     'margin-right':marge+'px'
                 });
             }
+            $(this).attr('data', index);
         });
 
 
 
 
 
-        self.options.nbElement = $(self.element).find('.carousel').length;
+        self.options.nbElement = self.options.allCarousel.length;
 
         self.options.elementPrecedent = self.options.nbElement;
 
-        $(self.element).find(".carousel").each(function(index) {
-            $(this).attr('data', index);
-        });
+
 
         if(self.options.preload){
             $(self.element).prepend('<div class="loaderCarouselBar"><div class="loaderCarouselProgressLeft"></div><div class="loaderCarouselProgress"></div><div class="loaderCarouselProgressRight"></div></div>');
@@ -141,7 +140,7 @@
         $(self.element).one('reload',function(event){
             event.stopPropagation();
 
-            $(self.element).find('.carousel').stop(true,true);
+            self.options.allCarousel.stop(true,true);
             self.options.tempo =clearTimeout(self.options.tempo);
 
             self.options.nbElement = null;
