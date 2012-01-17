@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.7
+ * Version : 1.4.7.1
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -24,7 +24,7 @@
     *
     * event 'reload' sur le conteneur relancera l'execution du carousel en cas de changement de contenu
     */
-    var pluginName = 'laaCarousel',callback=undefined,
+    var pluginName = 'laaCarousel',
     defaults = {
         delay: 3000, //délais en milliseconde (par defaut 3000)
         mode : "fade", //mode de transition (par defaut fade)
@@ -49,7 +49,8 @@
         tempo : null, //temps qui defini le rythme du carousel
         archive : null, //contenu initiale avant changement par ce Plugin
         allCarousel : null //contient la selection de tout les carousel qui compose la galerie
-    };
+    },callback// function passée en argument qui s'executera à chaque fin de transition
+    ;
 
     /**
      *Constructeur
@@ -729,7 +730,9 @@
      */
     Plugin.prototype.update = function(){
         var self = this;
-
+        if(self.callback){
+           self.callback(self);
+        }
         if(self.options.selecteur){
             $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
         }
@@ -769,9 +772,7 @@
         
         
         
-        if(callback){
-           this.callback(self);
-        }
+
     };
     /**
      * Méthode qui gere les error.
