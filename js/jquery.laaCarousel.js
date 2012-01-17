@@ -24,7 +24,7 @@
     *
     * event 'reload' sur le conteneur relancera l'execution du carousel en cas de changement de contenu
     */
-    var pluginName = 'laaCarousel',callback,
+    var pluginName = 'laaCarousel',callback=undefined,
     defaults = {
         delay: 3000, //délais en milliseconde (par defaut 3000)
         mode : "fade", //mode de transition (par defaut fade)
@@ -766,7 +766,12 @@
 
             $(self.element).find(".legendCarousel>p").html(legende);
         }
-        this.callback(self);
+        
+        
+        
+        if(callback){
+           this.callback(self);
+        }
     };
     /**
      * Méthode qui gere les error.
