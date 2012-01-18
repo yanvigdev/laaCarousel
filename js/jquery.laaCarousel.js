@@ -572,13 +572,13 @@
             self.options.elementCourant=self.suivant();
         }
 
-        self.options.allCarousel.eq(self.options.elementCourant).animate({
+        self.options.allCarousel.eq(self.options.elementCourant).stop().animate({
             opacity:1
         },'slow', function() {
 
             $(this).addClass('active');
             self.options.click =false;
-            $(this).siblings(".carousel").removeClass('active').filter(":visible").animate({
+            $(this).siblings(".carousel").removeClass('active').filter(":visible").stop().animate({
                 opacity:0
             },'slow');
 
