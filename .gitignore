@@ -1,2 +1,5 @@
 .DS_store
 nbproject
+.svn
+.gitignore
+.gitignore
