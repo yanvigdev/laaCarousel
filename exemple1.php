@@ -14,37 +14,37 @@
         <script type="text/javascript" src="js/jquery.laaCarousel.js"></script>
 
     </head>
-    <body>
-        <div class="wrapper">
+    <body style="width: 100%;height: 100%;">
+
 
 
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
-            $hauteur = 600;
-            $largeur = 980;
+            $hauteur = 768;
+            $largeur = 1024;
             ?>
             <?php for ($i = 1; $i < 2; $i++)
                 { ?>
-                <div class='diaporama' style="width: <?php echo $largeur ?>px;height: <?php echo $hauteur ?>px;float:left;" >
+                <div class='diaporama' style="width: 100%;height: 100%;margin:0 auto;" >
 
                     <?php for ($index = 1; $index < 9; $index++)
                         {
                         $letype=rand(1, 10)
                         ?>
-                        <img src='http://lorempixel.com/<?php echo $largeur . '/' . $hauteur; ?>/<?php echo $type[$letype]; ?>/<?php echo $index; ?>' height="<?php echo $hauteur ?>" width='<?php echo $largeur ?>' alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <img src='http://placehold.it/<?php echo $largeur . 'x' . $hauteur.'/'.dechex($index*100); ?>' width="<?php echo $largeur; ?>" height="<?php echo $hauteur; ?>" alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                     <?php }; ?>
 
                 </div>
             <?php }; ?>
 
 
-        </div>
+
 
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:true,autoplay:true},function(e){
-                    
+                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:false,autoplay:true,largeur:1024,hauteur:768},function(e){
+
                 });
 
 

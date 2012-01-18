@@ -769,9 +769,9 @@
 
             $(self.element).find(".legendCarousel>p").html(legende);
         }
-        
-        
-        
+
+
+
 
     };
     /**
