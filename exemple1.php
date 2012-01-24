@@ -10,24 +10,25 @@
         <link rel="stylesheet" media="screen" href="css/ecran.css" />
 
         <script type="text/javascript" src="js/jquery.js"></script>
+                <script type="text/javascript" src="js/easing.js"></script>
         <link rel="stylesheet" media="screen" href="css/laacarousel.css" />
         <script type="text/javascript" src="js/jquery.laaCarousel.js"></script>
 
     </head>
     <body style="width: 100%;height: 100%;">
-
+        <div class="wrapper">
 
 
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
-            $hauteur = 768;
-            $largeur = 1024;
+            $hauteur = 400;
+            $largeur = 600;
             ?>
             <?php for ($i = 1; $i < 2; $i++)
                 { ?>
-                <div class='diaporama' style="width: 100%;height: 100%;margin:0 auto;" >
+                <div class='diaporama' style="width: 600px;height: 500px;margin:0 auto;" >
 
-                    <?php for ($index = 1; $index < 9; $index++)
+                    <?php for ($index = 1; $index < 15; $index++)
                         {
                         $letype=rand(1, 10)
                         ?>
@@ -37,13 +38,13 @@
                 </div>
             <?php }; ?>
 
-
+        </div>
 
 
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,vignette:false,autoplay:true,largeur:1024,hauteur:768},function(e){
+                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,slidevignette:true,autoplay:true,largeur:600,hauteur:400,easing:'easeInOutBack'},function(e){
 
                 });
 

@@ -10,6 +10,7 @@
         <link rel="stylesheet" media="screen" href="css/ecran.css" />
 
         <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/easing.js"></script>
         <link rel="stylesheet" media="screen" href="css/laacarousel.css" />
         <script type="text/javascript" src="js/jquery.laaCarousel.js"></script>
 
@@ -58,8 +59,8 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('#diaporama1').laaCarousel({mode:'vague',vignette:true,largeur:700,hauteur:300});
-                $('#diaporama2').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300,fleche:true});
+                $('#diaporama1').laaCarousel({mode:'smooth',vignette:true,largeur:700,hauteur:300,easing:'easeInOutBack'});
+                $('#diaporama2').laaCarousel({mode:'slide',vignette:true,largeur:700,hauteur:300,fleche:true,easing:'easeInOutBack'});
 
 
             });

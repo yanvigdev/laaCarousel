@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.7.2
+ * Version : 1.4.8
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -36,8 +36,11 @@
         legende : null, //affichage ou non d'une legende sur chaque image (par defaut null)
         vignette : false, //ajout une serie de vignette pour passer d'une image à l'autre (par defaut false)
         vignetteHauteur : 50, //hauteur des vignettes (par defaut 50)
-        vignetteLargeur : 50, //largeur des vignettes (par defaut 50),
-        autoplay : true //fonction de mise en route des transitions
+        vignetteLargeur : 50, //largeur des vignettes (par defaut 50)
+        slidevignette : false, //ajout une serie de vignette pour passer d'une image à l'autre avec un effect de slide horizontal(par defaut false)
+        slideVignetteNbr : 3, //nombre de vignettes visible dans le slidevignettes (par defaut 3)
+        autoplay : true, //fonction de mise en route des transitions
+        easing : 'swing'
     },
     settings = {
         nbElement : null, //nombre d'image composant le carousel
@@ -236,7 +239,9 @@
             if(self.options.vignette){
                 self.vignette();
             }
-
+            if(self.options.slidevignette){
+                self.slideVignette();
+            }
 
 
             self.startCarousel();
@@ -399,7 +404,143 @@
 
 
         });
+        $(self.element).find(".vignetteCarousel").find("img").hover(
+            function() {
+                if($(this).attr("alt")!==""){
+                    $('body').append('<span class="infobulleCarousel"></span>');
+                    var bulle = $(".infobulleCarousel:last");
+                    bulle.append($(this).attr("alt"));
+                    var posTop = $(this).parent().offset().top;
+                    var posLeft = $(this).parent().offset().left+$(this).parent().width()/2-bulle.width()/2;
+                    bulle.css({
+                        'left':posLeft,
+                        'top':posTop-30,
+                        'opacity':0
+                    });
+                    bulle.animate({
+                        'top':posTop-20,
+                        opacity:0.99
+                    });
+                }
+            },
+            function() {
+
+                var bulle = $(".infobulleCarousel:last");
+                bulle.animate(
+                {
+                    'top':bulle.offset().top-30,
+                    'opacity':0
+                },
+                500,
+                "linear",
+                function(){
+                    bulle.remove();
+                }
+                );
+
+            });
     };
+    Plugin.prototype.slideVignette= function(){
+        var self = this;
+        var vignetteRatio = self.options.vignetteHauteur / self.options.vignetteLargeur;
+        $(self.element).append('<div class="blocVignetteCarousel"><div class="gaucheVignetteCarousel"></div><div class="masqueCarousel"><div class="slideVignetteCarousel"></div></div><div class="droiteVignetteCarousel"></div></div>');
+        self.options.allCarousel.each( function(index) {
+            var carouselRatio =  $(this).height() / $(this).width(), hauteur,largeur,style;
+            if (vignetteRatio > carouselRatio)
+            {
+                hauteur=self.options.vignetteHauteur;
+                largeur=self.options.vignetteHauteur / carouselRatio;
+
+
+                style="margin-left:"+(  (self.options.vignetteLargeur - self.options.vignetteHauteur / carouselRatio) / 2)+"px";
+
+            }
+            else {
+                largeur=self.options.vignetteLargeur;
+                hauteur=self.options.vignetteLargeur * carouselRatio;
+                style="margin-top:"+( (self.options.vignetteHauteur - self.options.vignetteLargeur * carouselRatio) / 2)+"px";
+
+            }
+            var thumbImage="<div><img src='"+$(this).attr('src')+"' height='"+hauteur+"' width='"+largeur+"' alt='"+$(this).attr('alt')+"' data='"+index+"' style='"+style+"'/></div>";
+            $(self.element).find('.slideVignetteCarousel').append(thumbImage);
+        });
+        $(self.element).find(".slideVignetteCarousel").find("div").css({
+            'height':self.options.vignetteHauteur+'px',
+            'width':self.options.vignetteLargeur+'px'
+        });
+        $(self.element).find(".slideVignetteCarousel").find("div:first").addClass('select');
+
+
+
+
+
+
+        $(self.element).find(".slideVignetteCarousel").width(self.options.nbElement*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true))
+        $(self.element).find(".masqueCarousel").width(self.options.slideVignetteNbr*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true))
+        $(self.element).find('.blocVignetteCarousel').width($(self.element).find(".masqueCarousel").outerWidth(true)+ $(self.element).find('.gaucheVignetteCarousel').outerWidth(true)+$(self.element).find('.droiteVignetteCarousel').outerWidth(true)).height($(self.element).find(".slideVignetteCarousel").find("div:first").outerHeight(true))
+
+
+
+        $(self.element).find(".slideVignetteCarousel").find("img").live('click', function(event) {
+            event.stopPropagation();
+
+
+
+            self.options.allCarousel.stop(true,true);
+            self.options.allCarousel.find('div').stop();
+
+            self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+
+
+            self.options.elementCourant =Number($(this).attr('data'));
+
+            self.options.tempo =clearTimeout(self.options.tempo);
+
+
+
+
+            self.options.click=true;
+            self.play();
+
+
+
+        });
+
+
+
+
+
+        $(self.element).find('.gaucheVignetteCarousel').live('click', function(event) {
+            event.stopPropagation();
+
+            self.options.allCarousel.stop(true,true);
+
+
+            self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+            self.options.elementCourant =((self.options.elementPrecedent-1)<0)?(self.options.nbElement-1):(self.options.elementPrecedent-1);
+
+            self.options.click=true;
+            self.play();
+
+
+        });
+        $(self.element).find('.droiteVignetteCarousel').live('click', function(event) {
+            event.stopPropagation();
+
+
+            self.options.allCarousel.stop(true,true);
+
+
+            self.options.elementPrecedent = Number($(self.element).find('.active').attr('data'));
+
+
+            self.options.elementCourant =((self.options.elementPrecedent+1)>=(self.options.nbElement))?0:(self.options.elementPrecedent+1);
+
+            self.options.click=true;
+            self.play();
+        });
+    };
+
 
     /**
      * Méthode qui place les elements de l'animation du carousel au premier lancement
@@ -580,7 +721,7 @@
             self.options.click =false;
             $(this).siblings(".carousel").removeClass('active').filter(":visible").stop().animate({
                 opacity:0
-            },'slow');
+            },'slow',self.options.easing );
 
 
 
@@ -623,7 +764,7 @@
 
             $(this).stop().animate({
                 'top':0
-            },delais);
+            },delais,self.options.easing );
             delais= delais+10;
 
         });
@@ -673,7 +814,7 @@
 
             $(this).stop().delay(delais).animate({
                 'opacity':1
-            },'slow');
+            },'slow',self.options.easing );
             delais= delais+10;
 
         });
@@ -703,7 +844,7 @@
         }
         $(self.element).find(".slideCarousel").stop().animate({
             'left': '-'+(self.options.slideMouvementH* self.options.elementCourant)+'px'
-        }, 'slow' , function() {
+        }, 'slow',self.options.easing , function() {
 
             $(self.element).find(".slideCarousel").find(".carousel").eq(self.options.elementCourant).addClass('active').siblings(".carousel").removeClass('active');
             self.options.click =false;
@@ -731,13 +872,36 @@
     Plugin.prototype.update = function(){
         var self = this;
         if(self.callback){
-           self.callback(self);
+            self.callback(self);
         }
         if(self.options.selecteur){
             $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
         }
         if(self.options.vignette){
             $(self.element).children(".vignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
+
+        }
+        if(self.options.slidevignette){
+            $(self.element).find(".slideVignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
+            var largeurMasque=$(self.element).find(".masqueCarousel").width();
+            var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true)
+            var nbr = (largeurMasque-((self.options.elementCourant+1)*largeurVignette)-((self.options.elementCourant < self.options.nbElement-1)?largeurVignette:0));
+
+
+
+            if(((self.options.elementCourant+1)*largeurVignette)>largeurMasque) {
+
+                $(self.element).find(".slideVignetteCarousel").stop().animate({
+                    'left':Number(nbr)+"px"
+                },'slow',self.options.easing);
+            }
+            else {
+                nbr = ((self.options.elementCourant !== 0)?nbr:0)
+                $(self.element).find(".slideVignetteCarousel").stop().animate({
+                    'left':Number(nbr)+"px"
+                },'slow',self.options.easing);
+
+            }
 
         }
         if(self.options.fleche){
