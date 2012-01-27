@@ -22,7 +22,7 @@
             <?php
             $type = array('abstract', 'animals', 'city', 'food', 'nightlife', 'fashion', 'people', 'nature', 'sports', 'technics', 'transport');
             $hauteur = 400;
-            $largeur = 600;
+            $largeur = 500;
             ?>
             <?php for ($i = 1; $i < 2; $i++)
                 { ?>
@@ -44,7 +44,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,slidevignette:true,autoplay:true,largeur:600,hauteur:400,easing:'easeInOutBack'},function(e){
+                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,slidevignette:false,autoplay:true,largeur:500,hauteur:400,easing:'easeInOutBack'},function(e){
 
                 });
 
