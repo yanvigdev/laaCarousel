@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8
+ * Version : 1.4.8.1
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -886,7 +886,9 @@
             var largeurMasque=$(self.element).find(".masqueCarousel").width();
             var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true)
             var nbr = (largeurMasque-((self.options.elementCourant+1)*largeurVignette)-((self.options.elementCourant < self.options.nbElement-1)?largeurVignette:0));
-
+if(self.options.elementCourant+1<self.options.slideVignetteNbr){
+					nbr = 0;
+				}
 
 
             if(((self.options.elementCourant+1)*largeurVignette)>largeurMasque) {
