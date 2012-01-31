@@ -40,7 +40,7 @@
         slidevignette : false, //ajout une serie de vignette pour passer d'une image à l'autre avec un effect de slide horizontal(par defaut false)
         slideVignetteNbr : 3, //nombre de vignettes visible dans le slidevignettes (par defaut 3)
         autoplay : true, //fonction de mise en route des transitions
-        easing : 'swing'
+        easing : 'swing'//easing configurable sur les transitions
     },
     settings = {
         nbElement : null, //nombre d'image composant le carousel
