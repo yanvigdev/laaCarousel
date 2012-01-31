@@ -24,7 +24,8 @@
     *
     * event 'reload' sur le conteneur relancera l'execution du carousel en cas de changement de contenu
     */
-    var pluginName = 'laaCarousel',
+   "use strict";
+    var pluginName = "laaCarousel",
     defaults = {
         delay: 3000, //délais en milliseconde (par defaut 3000)
         mode : "fade", //mode de transition (par defaut fade)
@@ -475,9 +476,9 @@
 
 
 
-        $(self.element).find(".slideVignetteCarousel").width(self.options.nbElement*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true))
-        $(self.element).find(".masqueCarousel").width(self.options.slideVignetteNbr*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true))
-        $(self.element).find('.blocVignetteCarousel').width($(self.element).find(".masqueCarousel").outerWidth(true)+ $(self.element).find('.gaucheVignetteCarousel').outerWidth(true)+$(self.element).find('.droiteVignetteCarousel').outerWidth(true)).height($(self.element).find(".slideVignetteCarousel").find("div:first").outerHeight(true))
+        $(self.element).find(".slideVignetteCarousel").width(self.options.nbElement*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true));
+        $(self.element).find(".masqueCarousel").width(self.options.slideVignetteNbr*$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true));
+        $(self.element).find('.blocVignetteCarousel').width($(self.element).find(".masqueCarousel").outerWidth(true)+ $(self.element).find('.gaucheVignetteCarousel').outerWidth(true)+$(self.element).find('.droiteVignetteCarousel').outerWidth(true)).height($(self.element).find(".slideVignetteCarousel").find("div:first").outerHeight(true));
 
 
 
@@ -884,11 +885,11 @@
         if(self.options.slidevignette){
             $(self.element).find(".slideVignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
             var largeurMasque=$(self.element).find(".masqueCarousel").width();
-            var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true)
+            var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true);
             var nbr = (largeurMasque-((self.options.elementCourant+1)*largeurVignette)-((self.options.elementCourant < self.options.nbElement-1)?largeurVignette:0));
-if(self.options.elementCourant+1<self.options.slideVignetteNbr){
-					nbr = 0;
-				}
+            if(self.options.elementCourant+1<self.options.slideVignetteNbr){
+                nbr = 0;
+            }
 
 
             if(((self.options.elementCourant+1)*largeurVignette)>largeurMasque) {
@@ -898,7 +899,7 @@ if(self.options.elementCourant+1<self.options.slideVignetteNbr){
                 },'slow',self.options.easing);
             }
             else {
-                nbr = ((self.options.elementCourant !== 0)?nbr:0)
+                nbr = ((self.options.elementCourant !== 0)?nbr:0);
                 $(self.element).find(".slideVignetteCarousel").stop().animate({
                     'left':Number(nbr)+"px"
                 },'slow',self.options.easing);
