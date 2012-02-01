@@ -60,7 +60,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diapora').laaCarousel({mode:'fade',vignette:true,hauteur:600,width:980,autoplay:true});
+                $('.diapora').laaCarousel({mode:'fade',vignette:true,hauteur:600,width:980,autoplay:true,legende:'alt'});
 
 
                  $('#bouton').click(function(e){

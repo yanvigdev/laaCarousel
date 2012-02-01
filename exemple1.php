@@ -26,13 +26,14 @@
             ?>
             <?php for ($i = 1; $i < 2; $i++)
                 { ?>
-                <div class='diaporama' style="width: 600px;height: 500px;margin:0 auto;" >
+                <div class='diaporama' style="width: 980px">
 
                     <?php for ($index = 1; $index < 15; $index++)
                         {
-                        $letype=rand(1, 10)
+                        $letype=rand(1, 10);
+                        $hauteur2=$hauteur+rand(1, 30)
                         ?>
-                    <img src='http://placehold.it/<?php echo $largeur . 'x' . $hauteur.'/'.dechex($index*100); ?>' width="<?php echo $largeur; ?>" height="<?php echo $hauteur; ?>" alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
+                    <img src='http://placehold.it/<?php echo $largeur . 'x' . $hauteur2.'/'.dechex($index*100); ?>'  alt="Lorem ipsum <?php echo $type[$letype]; ?>"/>
                     <?php }; ?>
 
                 </div>
@@ -44,7 +45,10 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diaporama').laaCarousel({mode:'slide',fleche:true,selecteur:false,slidevignette:false,autoplay:true,largeur:500,hauteur:400,easing:'easeInOutBack'},function(e){
+                $('.diaporama').laaCarousel({mode:'fade',fleche:true,selecteur:false,legende:'alt',slidevignette:false,autoplay:true,largeur:980,hauteur:400,easing:'easeInOutBack'},function(e){
+
+
+
 
                 });
 
