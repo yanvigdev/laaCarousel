@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8.4
+ * Version : 1.4.8.5
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -24,7 +24,7 @@
     *
     * event 'reload' sur le conteneur relancera l'execution du carousel en cas de changement de contenu
     */
-   "use strict";
+    "use strict";
     var pluginName = "laaCarousel",
     defaults = {
         delay: 3000, //délais en milliseconde (par defaut 3000)
@@ -39,7 +39,7 @@
         vignetteHauteur : 50, //hauteur des vignettes (par defaut 50)
         vignetteLargeur : 50, //largeur des vignettes (par defaut 50)
         slidevignette : false, //ajout une serie de vignette pour passer d'une image à l'autre avec un effect de slide horizontal(par defaut false)
-        slideVignetteNbr : 3, //nombre de vignettes visible dans le slidevignettes (par defaut 3)
+        slideVignetteNbr : 4, //nombre de vignettes visible dans le slidevignettes (par defaut 4)
         autoplay : true, //fonction de mise en route des transitions
         easing : 'swing'//easing configurable sur les transitions
     },
@@ -52,7 +52,8 @@
         survole : false,
         tempo : null, //temps qui defini le rythme du carousel
         archive : null, //contenu initiale avant changement par ce Plugin
-        allCarousel : null //contient la selection de tout les carousel qui compose la galerie
+        allCarousel : null, //contient la selection de tout les carousel qui compose la galerie
+        update : [] // tableau qui va contenir chaque function de mise à jour des différent element activé sur le carousel
     },callback// function passée en argument qui s'executera à chaque fin de transition
     ;
 
@@ -138,8 +139,6 @@
             self.options.nbElement = null;
             self.options.elementCourant = 0;
             self.options.elementPrecedent = null;
-            //self.options.largeur = null;
-            // self.options.hauteur=null;
             self.options.click = false;
             self.options.survole = false;
 
@@ -206,26 +205,26 @@
      */
     Plugin.prototype.setCarousel = function(){
         var self = this;
-    	self.options.allCarousel.each(function(index) {
+        self.options.allCarousel.each(function(index) {
 
-			if(self.options.hauteur != $(this).height()) {
-				$(this).attr('width', parseInt(self.options.hauteur * $(this).width() / $(this).height(), 10));
-				$(this).attr('height', self.options.hauteur);
-				console.log('change hauteur')
-			}
-			else
-			if(self.options.largeur !== $(this).width()) {
+            if(self.options.hauteur !== $(this).height()) {
+                $(this).attr('width', parseInt(self.options.hauteur * $(this).width() / $(this).height(), 10));
+                $(this).attr('height', self.options.hauteur);
 
-				var marge = ((self.options.largeur - $(this).width()) / 2);
+            }
 
-				$(this).css({
-					'margin-left' : marge + 'px',
-					'margin-right' : marge + 'px'
-				});
+            if(self.options.largeur !== $(this).width()) {
 
-			}
-			$(this).attr('data', index);
-		});
+                var marge = ((self.options.largeur - $(this).width()) / 2);
+
+                $(this).css({
+                    'margin-left' : marge + 'px',
+                    'margin-right' : marge + 'px'
+                });
+
+            }
+            $(this).attr('data', index);
+        });
 
 
         if(self.options.nbElement>1){
@@ -252,10 +251,7 @@
             self.startCarousel();
 
         }else{
-            /*$(self.element).find('.carousel').css({
-                "top":0,
-                "left":0
-            });*///place l'unique image au centre du container
+
             $(self.element).removeClass('loaderCarousel').find('.loaderCarouselBar').remove();
         }
 
@@ -296,6 +292,30 @@
             self.options.click=true;
             self.play();
         });
+
+        self.options.update.push(function(){
+            $(self.element).find(".flechesCarousel").stop().animate({
+                'opacity':1
+            },'fast');
+            if(self.options.elementCourant===0){
+                $(self.element).find(".flecheGauche").stop().animate({
+                    'opacity':0
+                },'fast');
+            }else{
+                $(self.element).find(".flecheGauche").stop().animate({
+                    'opacity':1
+                },'fast');
+            }
+            if(self.options.elementCourant===(self.options.nbElement-1)){
+                $(self.element).find(".flecheDroite").stop().animate({
+                    'opacity':0
+                },'fast');
+            }else{
+                $(self.element).find(".flecheDroite").stop().animate({
+                    'opacity':1
+                },'fast');
+            }
+        });
     };
     /**
      * Méthode qui ajout un serie de bouton pour passer à l'image de son choix
@@ -325,6 +345,9 @@
 
 
         });
+        self.options.update.push(function(){
+            $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
+        });
     };
     /**
      * Méthode qui ajout une legende tiré de l'attribut 'alt' de l'image
@@ -333,6 +356,15 @@
         var self = this;
 
         $(self.element).append("<div class='legendCarousel'><p></p></div>");
+
+
+
+
+        self.options.update.push(function(){
+            var legende = self.options.allCarousel.eq(self.options.elementCourant).attr(self.options.legende);
+            $(self.element).find(".legendCarousel>p").html(legende);
+        });
+
     };
     /**
      * Méthode qui ajout un serie de vignette pour passer à l'image de son choix
@@ -444,6 +476,13 @@
                 );
 
             });
+
+
+
+
+        self.options.update.push(function(){
+            $(self.element).children(".vignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
+        });
     };
     Plugin.prototype.slideVignette= function(){
         var self = this;
@@ -543,6 +582,22 @@
 
             self.options.click=true;
             self.play();
+        });
+
+        self.options.update.push(function(){
+            $(self.element).find(".slideVignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
+            var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true),
+            nbr;
+
+            if(self.options.elementCourant < self.options.nbElement-(self.options.slideVignetteNbr/2)-1 && self.options.elementCourant>(self.options.slideVignetteNbr/2)){
+                nbr = -1*(self.options.elementCourant*largeurVignette-parseInt(largeurVignette*self.options.slideVignetteNbr/2,10));
+            }else{
+                nbr=(self.options.elementCourant<=(self.options.slideVignetteNbr/2))?0:-1*((self.options.nbElement-self.options.slideVignetteNbr)*largeurVignette);
+            }
+
+            $(self.element).find(".slideVignetteCarousel").stop().animate({
+                'left':Number(nbr)+"px"
+            },'slow',self.options.easing);
         });
     };
 
@@ -876,66 +931,16 @@
      */
     Plugin.prototype.update = function(){
         var self = this;
+
+        self.options.update.forEach(function(i)
+        {
+            i();//lancement de chacune des fonctions contenues dans le tableau update
+        });
+
+
         if(self.callback){
             self.callback(self);
         }
-        if(self.options.selecteur){
-            $(self.element).children(".selecteurCarousel").find("span").eq(self.options.elementCourant).addClass('select').siblings("span").removeClass('select');
-        }
-        if(self.options.vignette){
-            $(self.element).children(".vignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
-
-        }
-        if(self.options.slidevignette){
-            $(self.element).find(".slideVignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
-            var largeurMasque=$(self.element).find(".masqueCarousel").width(),
-           	largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true),
-            nbr;
-
-			if(self.options.elementCourant < self.options.nbElement-(self.options.slideVignetteNbr/2)-1 && self.options.elementCourant>(self.options.slideVignetteNbr/2)){
-				nbr = -1*(self.options.elementCourant*largeurVignette-parseInt(largeurVignette*self.options.slideVignetteNbr/2,10));
-			}else{
-				nbr=(self.options.elementCourant<=(self.options.slideVignetteNbr/2))?0:-1*((self.options.nbElement-self.options.slideVignetteNbr)*largeurVignette);
-			}
-
-			$(self.element).find(".slideVignetteCarousel").stop().animate({
-                    'left':Number(nbr)+"px"
-                },'slow',self.options.easing);
-
-        }
-        if(self.options.fleche){
-            $(self.element).find(".flechesCarousel").stop().animate({
-                'opacity':1
-            },'fast');
-            if(self.options.elementCourant===0){
-                $(self.element).find(".flecheGauche").stop().animate({
-                    'opacity':0
-                },'fast');
-            }else{
-                $(self.element).find(".flecheGauche").stop().animate({
-                    'opacity':1
-                },'fast');
-            }
-            if(self.options.elementCourant===(self.options.nbElement-1)){
-                $(self.element).find(".flecheDroite").stop().animate({
-                    'opacity':0
-                },'fast');
-            }else{
-                $(self.element).find(".flecheDroite").stop().animate({
-                    'opacity':1
-                },'fast');
-            }
-        }
-        if(self.options.legende!==null){
-
-            var legende = self.options.allCarousel.eq(self.options.elementCourant).attr(self.options.legende);
-
-            $(self.element).find(".legendCarousel>p").html(legende);
-        }
-
-
-
-
     };
     /**
      * Méthode qui gere les error.
@@ -943,7 +948,7 @@
     Plugin.prototype.error = function(type){
         var self = this;
 
-        //console.log("Le carousel est en erreur sur votre container, il manque : "+type);
+    //console.log("Le carousel est en erreur sur votre container, il manque : "+type);
     };
 
 
