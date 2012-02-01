@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8.3
+ * Version : 1.4.8.4
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -888,27 +888,19 @@
         }
         if(self.options.slidevignette){
             $(self.element).find(".slideVignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
-            var largeurMasque=$(self.element).find(".masqueCarousel").width();
-            var largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true);
-            var nbr = (largeurMasque-((self.options.elementCourant+1)*largeurVignette)-((self.options.elementCourant < self.options.nbElement-1)?largeurVignette:0));
-            if(self.options.elementCourant+1<self.options.slideVignetteNbr){
-                nbr = 0;
-            }
+            var largeurMasque=$(self.element).find(".masqueCarousel").width(),
+           	largeurVignette =$(self.element).find(".slideVignetteCarousel").find("div:first").outerWidth(true),
+            nbr;
 
+			if(self.options.elementCourant < self.options.nbElement-(self.options.slideVignetteNbr/2)-1 && self.options.elementCourant>(self.options.slideVignetteNbr/2)){
+				nbr = -1*(self.options.elementCourant*largeurVignette-parseInt(largeurVignette*self.options.slideVignetteNbr/2,10));
+			}else{
+				nbr=(self.options.elementCourant<=(self.options.slideVignetteNbr/2))?0:-1*((self.options.nbElement-self.options.slideVignetteNbr)*largeurVignette);
+			}
 
-            if(((self.options.elementCourant+1)*largeurVignette)>largeurMasque) {
-
-                $(self.element).find(".slideVignetteCarousel").stop().animate({
+			$(self.element).find(".slideVignetteCarousel").stop().animate({
                     'left':Number(nbr)+"px"
                 },'slow',self.options.easing);
-            }
-            else {
-                nbr = ((self.options.elementCourant !== 0)?nbr:0);
-                $(self.element).find(".slideVignetteCarousel").stop().animate({
-                    'left':Number(nbr)+"px"
-                },'slow',self.options.easing);
-
-            }
 
         }
         if(self.options.fleche){
