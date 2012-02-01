@@ -148,7 +148,7 @@
             event.stopPropagation();
 
             self.options.allCarousel.stop(true,true);
-            self.options.tempo =clearTimeout(self.options.tempo);
+            self.options.tempo =window.clearTimeout(self.options.tempo);
 
             self.options.nbElement = null;
             self.options.elementCourant = 0;
@@ -394,7 +394,7 @@
 
             self.options.elementCourant =Number($(this).attr('data'));
 
-            self.options.tempo =clearTimeout(self.options.tempo);
+            self.options.tempo =window.clearTimeout(self.options.tempo);
 
 
 
@@ -495,7 +495,7 @@
 
             self.options.elementCourant =Number($(this).attr('data'));
 
-            self.options.tempo =clearTimeout(self.options.tempo);
+            self.options.tempo =window.clearTimeout(self.options.tempo);
 
 
 
@@ -616,7 +616,7 @@
                 break;
         }
         $(self.element).removeClass('loaderCarousel').find('.loaderCarouselBar').remove();
-        self.options.tempo= setTimeout( function() {
+        self.options.tempo= window.setTimeout( function() {
             self.play();
 
         },self.options.delay);
@@ -671,7 +671,7 @@
     Plugin.prototype.play = function(){
         var self = this;
 
-        self.options.tempo =clearTimeout(self.options.tempo);
+        self.options.tempo =window.clearTimeout(self.options.tempo);
 
 
         if(self.options.autoplay||self.options.click){
@@ -696,7 +696,7 @@
             }//fin switch
         }//if autoplay
 
-        self.options.tempo= setTimeout( function() {
+        self.options.tempo= window.setTimeout( function() {
             self.play();
 
         },self.options.delay);
@@ -947,7 +947,7 @@
     Plugin.prototype.error = function(type){
         var self = this;
 
-        console.log("Le carousel est en erreur sur votre container, il manque : "+type);
+        //console.log("Le carousel est en erreur sur votre container, il manque : "+type);
     };
 
 
