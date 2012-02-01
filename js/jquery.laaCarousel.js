@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8.2
+ * Version : 1.4.8.3
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -105,22 +105,7 @@
             }
         }
         $(self.element).find('.animationCarousel').height(self.options.hauteur).width(self.options.largeur);
-        self.options.allCarousel.each(function(index){
-            if(self.options.hauteur!==$(this).height()){
-                $(this).attr('width',parseInt(self.options.hauteur*$(this).width()/$(this).height(),10));
-                $(this).attr('height',self.options.hauteur);
-            }
-            if(self.options.largeur!==$(this).width()){
 
-                var marge = ((self.options.largeur-$(this).width())/2);
-
-                $(this).css({
-                    'margin-left':marge+'px',
-                    'margin-right':marge+'px'
-                });
-            }
-            $(this).attr('data', index);
-        });
 
 
 
@@ -221,7 +206,26 @@
      */
     Plugin.prototype.setCarousel = function(){
         var self = this;
+    	self.options.allCarousel.each(function(index) {
 
+			if(self.options.hauteur != $(this).height()) {
+				$(this).attr('width', parseInt(self.options.hauteur * $(this).width() / $(this).height(), 10));
+				$(this).attr('height', self.options.hauteur);
+				console.log('change hauteur')
+			}
+			else
+			if(self.options.largeur !== $(this).width()) {
+
+				var marge = ((self.options.largeur - $(this).width()) / 2);
+
+				$(this).css({
+					'margin-left' : marge + 'px',
+					'margin-right' : marge + 'px'
+				});
+
+			}
+			$(this).attr('data', index);
+		});
 
 
         if(self.options.nbElement>1){
