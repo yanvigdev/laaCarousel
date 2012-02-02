@@ -590,7 +590,7 @@
             nbr;
 
             if(self.options.elementCourant < self.options.nbElement-(self.options.slideVignetteNbr/2)-1 && self.options.elementCourant>(self.options.slideVignetteNbr/2)){
-                nbr = -1*(self.options.elementCourant*largeurVignette-parseInt(largeurVignette*self.options.slideVignetteNbr/2,10));
+                nbr = -1*(self.options.elementCourant*largeurVignette-largeurVignette*parseInt(self.options.slideVignetteNbr/2,10));
             }else{
                 nbr=(self.options.elementCourant<=(self.options.slideVignetteNbr/2))?0:-1*((self.options.nbElement-self.options.slideVignetteNbr)*largeurVignette);
             }
