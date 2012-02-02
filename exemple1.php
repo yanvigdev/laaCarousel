@@ -28,7 +28,7 @@
                 { ?>
                 <div class='diaporama' style="width: 980px">
 
-                    <?php for ($index = 1; $index < 15; $index++)
+                    <?php for ($index = 1; $index <= 234; $index++)
                         {
                         $letype=rand(1, 10);
                         $hauteur2=$hauteur+rand(1, 30)

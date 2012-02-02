@@ -156,31 +156,16 @@
     left: 0;
     right: 0;
     top: 50%;
-    width: 180px;
-    height: 12px;
-    padding: 10px;
-    background: url(../images/loaderCarouselBar.png) no-repeat center center;
+    width: 100px;
+    height: 2px;
+    background-color: #3a3427;
     z-index: 10;
 }
-.loaderCarouselBar div{
-    float: left;
-}
-.loaderCarouselProgressLeft{
-    height: 12px;
-    width: 6px;
-    background: url(../images/loaderCarouselProgress.png) no-repeat left center;
-}
-.loaderCarouselProgressRight{
-    height: 12px;
-    width: 6px;
-    background: url(../images/loaderCarouselProgress.png) no-repeat right center;
 
-}
 .loaderCarouselProgress{
-    height: 12px;
-    /* width: 168px;*/
-    width: 0px;
-    background: url(../images/bkgLoaderCarouselBar.png);
+    height: 2px;
+     width: 0;
+     background-color: #b2a266;
 }
 .infobulleCarousel{
     position:absolute;
@@ -198,16 +183,6 @@
     overflow: hidden;
 
 }
-
-/*.slideVignetteCarousel>div {
-    cursor: pointer;
-    overflow: hidden;
-    float: left;
-    width: 50px;
-    border: 1px solid #8aa723;
-    margin : 0 2px;
-
-}*/
 .slideVignetteCarousel {
     position: absolute;
 }
