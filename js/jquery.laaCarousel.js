@@ -668,7 +668,7 @@
     Plugin.prototype.update = function(){
         var self = this;
         /*self.options.update.forEach(function(iFunc)*/
-        for(var i; i<self.options.update.length;i++)
+        for(var i=0; i<self.options.update.length;i++)
         {
             self.options.update[i]();//lancement de chacune des fonctions contenues dans le tableau update
         };
