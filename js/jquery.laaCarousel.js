@@ -671,7 +671,7 @@
         for(var i=0; i<self.options.update.length;i++)
         {
             self.options.update[i]();//lancement de chacune des fonctions contenues dans le tableau update
-        };
+        }
         if(self.callback){
             self.callback(self);
         }
