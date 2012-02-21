@@ -164,8 +164,9 @@
 
 .loaderCarouselProgress{
     height: 2px;
-     width: 0;
-     background-color: #b2a266;
+    width: 0;
+    background-color: #b2a266;
+    max-width:100px!important;
 }
 .infobulleCarousel{
     position:absolute;
