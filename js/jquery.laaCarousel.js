@@ -555,7 +555,7 @@
         },'slow', function() {
             $(this).addClass('active');
             self.options.click =false;
-            self.options.allCarousel.eq(self.options.elementCourant).nextAll(".carousel").stop().animate({
+            $(this).siblings(".carousel").removeClass('active').filter(":visible").stop().animate({
                 opacity:0
             },'slow',self.options.easing );
         });
