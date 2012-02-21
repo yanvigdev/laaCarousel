@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8.7
+ * Version : 1.4.8.8
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -555,7 +555,7 @@
         },'slow', function() {
             $(this).addClass('active');
             self.options.click =false;
-            $(this).siblings(".carousel").removeClass('active').filter(":visible").stop().animate({
+            self.options.allCarousel.eq(self.options.elementCourant).nextAll(".carousel").stop().animate({
                 opacity:0
             },'slow',self.options.easing );
         });
