@@ -161,8 +161,8 @@
             if(self.options.largeur !== $(this).width()) {
                 var marge = ((self.options.largeur - $(this).width()) / 2);
                 $(this).css({
-                    'margin-left' : marge + 'px',
-                    'margin-right' : marge + 'px'
+                    'margin-left' : Math.ceil(marge) + 'px',
+                    'margin-right' : Math.floor(marge) + 'px'
                 });
             }
             $(this).attr('data', index);
