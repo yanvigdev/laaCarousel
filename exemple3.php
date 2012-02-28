@@ -43,7 +43,7 @@
                 { ?>
                 <div class='diaporama2' style="display: none" >
 
-                    <?php for ($index = 5; $index < 9; $index++)
+                    <?php for ($index = 5; $index < 6; $index++)
                         {
                         $letype=rand(1, 10)
                         ?>
@@ -60,7 +60,7 @@
         <script type="text/javascript">
 
             $(document).ready( function() {
-                $('.diapora').laaCarousel({mode:'fade',vignette:true,hauteur:600,width:980,autoplay:true,legende:'alt'});
+                $('.diapora').laaCarousel({mode:'fade',vignette:true,hauteur:600,width:980,autoplay:true,legende:'alt',infobulle:true});
 
 
                  $('#bouton').click(function(e){
