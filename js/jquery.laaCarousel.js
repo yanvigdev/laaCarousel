@@ -4,7 +4,7 @@
  * Comments: Yann Vignolet
  * Date : 13/01/2012
  * http://www.yannvignolet.fr
- * Version : 1.4.8.8
+ * Version : 1.4.8.9
  *
  * Ce plugin affiche en diaporama les images d'un conteneur avec des effets de transition.
  *
@@ -34,7 +34,8 @@
         slidevignette : false, //ajout une serie de vignette pour passer d'une image a l'autre avec un effect de slide horizontal(par defaut false)
         slideVignetteNbr : 4, //nombre de vignettes visible dans le slidevignettes (par defaut 4)
         autoplay : true, //fonction de mise en route des transitions
-        easing : 'swing'//easing configurable sur les transitions
+        easing : 'swing',//easing configurable sur les transitions
+        infobulle : false //Activation des infobulles sur les vignettes
     },
     settings = {
         nbElement : null, //nombre d'image composant le carousel
@@ -105,6 +106,7 @@
             self.options.elementPrecedent = null;
             self.options.click = false;
             self.options.survole = false;
+            self.options.update = [];
             $(self.element).removeClass('carouselcontainer');
             if($(self.element).find("img").hasClass('carousel')){
                 $(self.element).html(self.options.archive);
@@ -185,6 +187,7 @@
             }
             self.startCarousel();
         }else{
+            self.options.allCarousel.css({'top':0,'left':0}).show();
             $(self.element).removeClass('loaderCarousel').find('.loaderCarouselBar').remove();
         }
     };
@@ -264,7 +267,13 @@
         $(self.element).append("<div class='legendCarousel'><p></p></div>");
         self.options.update.push(function(){
             var legende = self.options.allCarousel.eq(self.options.elementCourant).attr(self.options.legende);
-            $(self.element).find(".legendCarousel>p").html(legende);
+            if(legende){
+                $(self.element).find(".legendCarousel>p").html(legende);
+                $(self.element).find(".legendCarousel").show();
+            }
+            else{
+                $(self.element).find(".legendCarousel").hide();
+            }
         });
     };
     /**
@@ -320,6 +329,7 @@
             self.options.click=true;
             self.play();
         });
+        if(self.options.infobulle){
         $(self.element).find(".vignetteCarousel").find("img").hover(
             function() {
                 if($(this).attr("alt")!==""){
@@ -353,6 +363,7 @@
                 }
                 );
             });
+            }
         self.options.update.push(function(){
             $(self.element).children(".vignetteCarousel").find("div").eq(self.options.elementCourant).addClass('select').siblings("div").removeClass('select');
         });
